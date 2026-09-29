@@ -1,0 +1,15 @@
+.tools/
+.gradle/
+**/build/
+local.properties
+.idea/
+*.jks
+*.keystore
+__pycache__/
+.venv/
+output/
+
+
+# 사용자 제공 원본 및 그로부터 생성되는 파일 (개인 정보 포함 가능, 공개 저장소에 올리지 않음)
+DATA/
+app/src/main/assets/
