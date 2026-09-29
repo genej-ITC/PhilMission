@@ -62,6 +62,8 @@ Start-Process .tools\android-sdk\emulator\emulator.exe -ArgumentList '-avd','pm'
 5. lint 문제 해결(아래), 릴리스 서명 키 생성(저장소 밖 보관), 검수 완료 후 `--release` 검증 통과 확인.
 
 ## 재개 방법
+**GitHub(https://github.com/genej-ITC/PhilMission)에는 `DATA/`와 생성 assets(`app/src/main/assets/`)가 없다.** 사용자 제공 원본에 가족 개인 사정이 있고 저장소가 공개라서 제외했다. 다른 PC에서 이어가려면 `DATA/`를 별도로 복사한 뒤 `python tools/prepare_content.py`로 assets를 생성해야 빌드된다. 툴체인은 `tools/install_toolchain.py`로 재설치한다.
+
 ```
 python tools/prepare_content.py          # content/*.tsv|json + DATA → app/src/main/assets
 python tools/validate_content.py         # 초안 구조 검증
