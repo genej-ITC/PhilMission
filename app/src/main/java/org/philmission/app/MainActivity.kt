@@ -93,6 +93,7 @@ fun MissionApp(content: Content, users: UserStore) {
         route.startsWith("pdf:") -> "선교 일정"
         route == "gospel" -> "복음 안내 카드"
         route == "prayer" -> "영접 기도문"
+        route == "translate" -> "통역"
         route == "contacts" -> "연락처"
         route == "docs" -> "현장 자료"
         route == "check" -> "현장 준비 점검"
@@ -139,6 +140,7 @@ fun MissionApp(content: Content, users: UserStore) {
                 route.startsWith("pdf:") -> PdfAssetScreen(route.removePrefix("pdf:"))
                 route == "gospel" -> GospelScreen(content.gospelCards, language, base)
                 route == "prayer" -> GospelScreen(listOf(content.gospelPrayer), language, base)
+                route == "translate" -> TranslateScreen(base)
                 route == "contacts" -> ContactsScreen(content, users)
                 route == "docs" -> DocsScreen(content, ::push)
                 route == "check" -> ReadinessScreen(content)

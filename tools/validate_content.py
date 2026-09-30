@@ -34,7 +34,7 @@ def validate(data, release=False):
             errors.append('review not approved')
         if data.get('licenseStatus') not in ('approved','original'):
             errors.append('license not approved')
-        for group, count in [('worship',4), ('songs',5), ('fieldDocuments',3)]:
+        for group, count in [('worship',4), ('songs',2), ('fieldDocuments',3)]:
             if len(data.get(group,[])) != count:
                 errors.append(f'release requires {count} {group}')
         if len(data.get('gospel',{}).get('cards',[])) < 1:

@@ -33,6 +33,7 @@ dependencies {
     implementation("androidx.room:room-ktx:2.7.1")
     kapt("androidx.room:room-compiler:2.7.1")
     implementation("androidx.datastore:datastore-preferences:1.1.7")
+    implementation("com.google.mlkit:translate:17.0.3")
     testImplementation("junit:junit:4.13.2")
 }
 tasks.register("verifyReleaseContent", Exec::class) {

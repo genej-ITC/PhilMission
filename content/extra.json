@@ -1,124 +1,502 @@
 {
   "worship": [
     {
-      "id": "worship-lords-prayer", "title": "주기도문", "source": "사용자 제공 DATA/가정심방 예배순서.jpg (따갈로그어). 영어·한국어 뜻·독음은 초안",
+      "id": "worship-lords-prayer",
+      "title": "주기도문",
+      "source": "사용자 제공 DATA/가정심방 예배순서.jpg (따갈로그어). 영어·한국어 뜻·독음은 초안",
       "sentences": [
-        {"id": "lp-1", "tl": "Ama namin nasa langit, ambahin nawa ang iyong pangalan.", "en": "Our Father in heaven, hallowed be your name.", "ko": "하늘에 계신 우리 아버지, 아버지의 이름이 거룩히 여김을 받으소서.", "pron": "아마 나민 나사 랑잇, 암바힌 나와 앙 이욤 빵알란."},
-        {"id": "lp-2", "tl": "Umating nawa ang iyong kaharian.", "en": "Your kingdom come.", "ko": "아버지의 나라가 임하시오며.", "pron": "우마팅 나와 앙 이욤 까하리안."},
-        {"id": "lp-3", "tl": "Masunod nawa ang iyong kalooban dito sa lupa tulad ng sa langit.", "en": "Your will be done on earth as it is in heaven.", "ko": "아버지의 뜻이 하늘에서 이루어진 것같이 땅에서도 이루어지이다.", "pron": "마수녿 나와 앙 이욤 깔로오반 디토 사 루빠 뚤라드 응 사 랑잇."},
-        {"id": "lp-4", "tl": "Bigyan mo kami ng aming pagkain sa araw-araw", "en": "Give us today our daily bread.", "ko": "오늘 우리에게 일용할 양식을 주시옵고.", "pron": "빅얀 모 까미 응 아밍 빡까인 사 아라우아라우"},
-        {"id": "lp-5", "tl": "at patawarin mo kami sa aming mga kasalanan, tulad ng pagpapatawad namin sa mga nagkakasala sa amin.", "en": "Forgive us our sins, as we forgive those who sin against us.", "ko": "우리가 우리에게 죄지은 사람을 용서하여 준 것같이 우리 죄를 용서하여 주시옵고.", "pron": "앗 빠따와린 모 까미 사 아밍 망아 까살라난, 뚤라드 응 빡빠빠따와드 나민 사 망아 낙까까살라 사 아민."},
-        {"id": "lp-6", "tl": "At huwag mo kaming hayaang matukso, kundi iligtas mo kami sa Masama!", "en": "And lead us not into temptation, but deliver us from evil.", "ko": "우리를 시험에 들게 하지 마시고 다만 악에서 구하옵소서.", "pron": "앗 후왁 모 까밍 하야앙 마뚜끄소, 꾼디 일릭따스 모 까미 사 마사마!"},
-        {"id": "lp-7", "tl": "Sapagkat iyo ang kaharian, at ang kapangyarihan, at ang kaluwalhatian, magpakailanman! Amen", "en": "For yours is the kingdom, the power, and the glory forever. Amen.", "ko": "나라와 권능과 영광이 영원히 아버지께 있사옵나이다. 아멘.", "pron": "사빡깟 이요 앙 까하리안, 앗 앙 까빵야리한, 앗 앙 깔루왈하띠안, 막빠까일라난! 아멘"}
+        {
+          "id": "lp-1",
+          "tl": "Ama namin nasa langit, ambahin nawa ang iyong pangalan.",
+          "en": "Our Father in heaven, hallowed be your name.",
+          "ko": "하늘에 계신 우리 아버지, 아버지의 이름이 거룩히 여김을 받으소서.",
+          "pron": "아마 나민 나사 랑잇, 암바힌 나와 앙 이욤 빵알란."
+        },
+        {
+          "id": "lp-2",
+          "tl": "Umating nawa ang iyong kaharian.",
+          "en": "Your kingdom come.",
+          "ko": "아버지의 나라가 임하시오며.",
+          "pron": "우마팅 나와 앙 이욤 까하리안."
+        },
+        {
+          "id": "lp-3",
+          "tl": "Masunod nawa ang iyong kalooban dito sa lupa tulad ng sa langit.",
+          "en": "Your will be done on earth as it is in heaven.",
+          "ko": "아버지의 뜻이 하늘에서 이루어진 것같이 땅에서도 이루어지이다.",
+          "pron": "마수녿 나와 앙 이욤 깔로오반 디토 사 루빠 뚤라드 응 사 랑잇."
+        },
+        {
+          "id": "lp-4",
+          "tl": "Bigyan mo kami ng aming pagkain sa araw-araw",
+          "en": "Give us today our daily bread.",
+          "ko": "오늘 우리에게 일용할 양식을 주시옵고.",
+          "pron": "빅얀 모 까미 응 아밍 빡까인 사 아라우아라우"
+        },
+        {
+          "id": "lp-5",
+          "tl": "at patawarin mo kami sa aming mga kasalanan, tulad ng pagpapatawad namin sa mga nagkakasala sa amin.",
+          "en": "Forgive us our sins, as we forgive those who sin against us.",
+          "ko": "우리가 우리에게 죄지은 사람을 용서하여 준 것같이 우리 죄를 용서하여 주시옵고.",
+          "pron": "앗 빠따와린 모 까미 사 아밍 망아 까살라난, 뚤라드 응 빡빠빠따와드 나민 사 망아 낙까까살라 사 아민."
+        },
+        {
+          "id": "lp-6",
+          "tl": "At huwag mo kaming hayaang matukso, kundi iligtas mo kami sa Masama!",
+          "en": "And lead us not into temptation, but deliver us from evil.",
+          "ko": "우리를 시험에 들게 하지 마시고 다만 악에서 구하옵소서.",
+          "pron": "앗 후왁 모 까밍 하야앙 마뚜끄소, 꾼디 일릭따스 모 까미 사 마사마!"
+        },
+        {
+          "id": "lp-7",
+          "tl": "Sapagkat iyo ang kaharian, at ang kapangyarihan, at ang kaluwalhatian, magpakailanman! Amen",
+          "en": "For yours is the kingdom, the power, and the glory forever. Amen.",
+          "ko": "나라와 권능과 영광이 영원히 아버지께 있사옵나이다. 아멘.",
+          "pron": "사빡깟 이요 앙 까하리안, 앗 앙 까빵야리한, 앗 앙 깔루왈하띠안, 막빠까일라난! 아멘"
+        }
       ]
     },
     {
-      "id": "worship-apostles-creed", "title": "사도신경", "source": "사용자 제공 DATA/가정심방 예배순서.jpg (따갈로그어). 영어·한국어 뜻·독음은 초안",
+      "id": "worship-apostles-creed",
+      "title": "사도신경",
+      "source": "사용자 제공 DATA/가정심방 예배순서.jpg (따갈로그어). 영어·한국어 뜻·독음은 초안",
       "sentences": [
-        {"id": "ac-1", "tl": "Sumasampalataya ako sa Diyos Amang Makapangyarihan sa lahat, lumalang ng langit at lupa;", "en": "I believe in God, the Father almighty, creator of heaven and earth;", "ko": "전능하신 아버지 하나님, 하늘과 땅을 만드신 분을 나는 믿습니다.", "pron": "수마삼빨라따야 아꼬 사 디요스 아망 마까빵야리한 사 라하트, 루말랑 응 랑잇 앗 루빠;"},
-        {"id": "ac-2", "tl": "at kay Hesu-kristo na Anak Niya, Panginoon natin,", "en": "and in Jesus Christ, his only Son, our Lord,", "ko": "그분의 아들 우리 주 예수 그리스도를 믿습니다.", "pron": "앗 까이 헤수크리스또 나 아낙 니야, 빵이노온 나띤,"},
-        {"id": "ac-3", "tl": "na sa hiwaga ng Espiritu Santo, ipinanganak ng Birhen Maria.", "en": "who was conceived by the Holy Spirit and born of the Virgin Mary.", "ko": "성령으로 잉태되어 동정녀 마리아에게서 나셨으며,", "pron": "나 사 히와가 응 에스피리뚜 산또, 이삐낭아낙 응 비르헨 마리아."},
-        {"id": "ac-4", "tl": "nagdamdam ng hirap sa kahatulan ni Poncio Pilato, ipinako sa krus, namatay at inilibing sa ikatlong araw ay nabuhay sa mga patay,", "en": "He suffered under Pontius Pilate, was crucified, died, and was buried; on the third day he rose from the dead;", "ko": "본디오 빌라도에게 고난을 받아 십자가에 못 박혀 죽으시고 묻히셨으며, 사흘째 되는 날 죽은 자 가운데서 살아나셨습니다.", "pron": "낙담담 응 히랍 사 까하뚤란 니 뽄시오 삘라또, 이삐나꼬 사 크루스, 나마따이 앗 이닐리빙 사 이까뜰롱 아라우 아이 나부하이 사 망아 빠따이,"},
-        {"id": "ac-5", "tl": "Umakyat sa langit, at umupo sa kanan ng Diyos Amang Makapangyarihan sa lahat; doon nagmumula na parito upang humukom sa mga buhay at mga patay.", "en": "He ascended into heaven and is seated at the right hand of God the Father almighty; from there he will come to judge the living and the dead.", "ko": "하늘에 오르시어 전능하신 아버지 하나님 우편에 앉아 계시다가, 거기로부터 살아 있는 자와 죽은 자를 심판하러 오십니다.", "pron": "우마꺗 사 랑잇, 앗 우무뽀 사 까난 응 디요스 아망 마까빵야리한 사 라하트; 도온 낙무물라 나 빠리또 우빵 후무꼼 사 망아 부하이 앗 망아 빠따이."},
-        {"id": "ac-6", "tl": "Sumasampalataya rin ako sa Espiritu Santo, ang Banal na Iglesiang laganap, ang pagkakaisa ng mga banal,", "en": "I believe in the Holy Spirit, the holy catholic (universal) church, the communion of saints,", "ko": "성령을 믿으며, 거룩한 공교회와 성도가 서로 교제하는 것을 믿습니다.", "pron": "수마삼빨라따야 린 아꼬 사 에스피리뚜 산또, 앙 바날 나 이글레시앙 라가납, 앙 빡까까이사 응 망아 바날,"},
-        {"id": "ac-7", "tl": "ang kapatawaran ng mga kasalanan, ang kabuhayan ng katawan, at ang buhay na walang hangang, Siya nawa.", "en": "the forgiveness of sins, the resurrection of the body, and the life everlasting. Amen.", "ko": "죄를 용서받는 것과 몸이 다시 사는 것과 영원한 생명을 믿습니다. 아멘.", "pron": "앙 까빠따와란 응 망아 까살라난, 앙 까부하얀 응 까따완, 앗 앙 부하이 나 왈랑 항강, 시야 나와."}
+        {
+          "id": "ac-1",
+          "tl": "Sumasampalataya ako sa Diyos Amang Makapangyarihan sa lahat, lumalang ng langit at lupa;",
+          "en": "I believe in God, the Father almighty, creator of heaven and earth;",
+          "ko": "전능하신 아버지 하나님, 하늘과 땅을 만드신 분을 나는 믿습니다.",
+          "pron": "수마삼빨라따야 아꼬 사 디요스 아망 마까빵야리한 사 라하트, 루말랑 응 랑잇 앗 루빠;"
+        },
+        {
+          "id": "ac-2",
+          "tl": "at kay Hesu-kristo na Anak Niya, Panginoon natin,",
+          "en": "and in Jesus Christ, his only Son, our Lord,",
+          "ko": "그분의 아들 우리 주 예수 그리스도를 믿습니다.",
+          "pron": "앗 까이 헤수크리스또 나 아낙 니야, 빵이노온 나띤,"
+        },
+        {
+          "id": "ac-3",
+          "tl": "na sa hiwaga ng Espiritu Santo, ipinanganak ng Birhen Maria.",
+          "en": "who was conceived by the Holy Spirit and born of the Virgin Mary.",
+          "ko": "성령으로 잉태되어 동정녀 마리아에게서 나셨으며,",
+          "pron": "나 사 히와가 응 에스피리뚜 산또, 이삐낭아낙 응 비르헨 마리아."
+        },
+        {
+          "id": "ac-4",
+          "tl": "nagdamdam ng hirap sa kahatulan ni Poncio Pilato, ipinako sa krus, namatay at inilibing sa ikatlong araw ay nabuhay sa mga patay,",
+          "en": "He suffered under Pontius Pilate, was crucified, died, and was buried; on the third day he rose from the dead;",
+          "ko": "본디오 빌라도에게 고난을 받아 십자가에 못 박혀 죽으시고 묻히셨으며, 사흘째 되는 날 죽은 자 가운데서 살아나셨습니다.",
+          "pron": "낙담담 응 히랍 사 까하뚤란 니 뽄시오 삘라또, 이삐나꼬 사 크루스, 나마따이 앗 이닐리빙 사 이까뜰롱 아라우 아이 나부하이 사 망아 빠따이,"
+        },
+        {
+          "id": "ac-5",
+          "tl": "Umakyat sa langit, at umupo sa kanan ng Diyos Amang Makapangyarihan sa lahat; doon nagmumula na parito upang humukom sa mga buhay at mga patay.",
+          "en": "He ascended into heaven and is seated at the right hand of God the Father almighty; from there he will come to judge the living and the dead.",
+          "ko": "하늘에 오르시어 전능하신 아버지 하나님 우편에 앉아 계시다가, 거기로부터 살아 있는 자와 죽은 자를 심판하러 오십니다.",
+          "pron": "우마꺗 사 랑잇, 앗 우무뽀 사 까난 응 디요스 아망 마까빵야리한 사 라하트; 도온 낙무물라 나 빠리또 우빵 후무꼼 사 망아 부하이 앗 망아 빠따이."
+        },
+        {
+          "id": "ac-6",
+          "tl": "Sumasampalataya rin ako sa Espiritu Santo, ang Banal na Iglesiang laganap, ang pagkakaisa ng mga banal,",
+          "en": "I believe in the Holy Spirit, the holy catholic (universal) church, the communion of saints,",
+          "ko": "성령을 믿으며, 거룩한 공교회와 성도가 서로 교제하는 것을 믿습니다.",
+          "pron": "수마삼빨라따야 린 아꼬 사 에스피리뚜 산또, 앙 바날 나 이글레시앙 라가납, 앙 빡까까이사 응 망아 바날,"
+        },
+        {
+          "id": "ac-7",
+          "tl": "ang kapatawaran ng mga kasalanan, ang kabuhayan ng katawan, at ang buhay na walang hangang, Siya nawa.",
+          "en": "the forgiveness of sins, the resurrection of the body, and the life everlasting. Amen.",
+          "ko": "죄를 용서받는 것과 몸이 다시 사는 것과 영원한 생명을 믿습니다. 아멘.",
+          "pron": "앙 까빠따와란 응 망아 까살라난, 앙 까부하얀 응 까따완, 앗 앙 부하이 나 왈랑 항강, 시야 나와."
+        }
       ]
     },
     {
-      "id": "worship-ten-commandments", "title": "십계명", "source": "출애굽기 20장에 기초한 요약 초안 (개신교 번호). 따갈로그어 표현은 현지 검수 필요",
+      "id": "worship-ten-commandments",
+      "title": "십계명",
+      "source": "출애굽기 20장에 기초한 요약 초안 (개신교 번호). 따갈로그어 표현은 현지 검수 필요",
       "sentences": [
-        {"id": "tc-1", "tl": "Huwag kang magkaroon ng ibang diyos maliban sa Akin.", "en": "You shall have no other gods before me.", "ko": "나 외에 다른 신들을 두지 말라.", "pron": "후왁 깡 막까로온 응 이방 디요스 말리반 사 아낀."},
-        {"id": "tc-2", "tl": "Huwag kang gagawa ng dios-diosan para sambahin.", "en": "You shall not make idols to worship.", "ko": "자신을 위하여 우상을 만들어 섬기지 말라.", "pron": "후왁 깡 가가와 응 디오스디오산 빠라 삼바힌."},
-        {"id": "tc-3", "tl": "Huwag mong babanggitin nang walang kabuluhan ang pangalan ng Panginoon.", "en": "You shall not misuse the name of the Lord your God.", "ko": "여호와의 이름을 망령되이 부르지 말라.", "pron": "후왁 몽 바방기띤 낭 왈랑 까불루한 앙 빵알란 응 빵이노온."},
-        {"id": "tc-4", "tl": "Alalahanin mo ang araw ng Sabbath at ipangilin ito.", "en": "Remember the Sabbath day and keep it holy.", "ko": "안식일을 기억하여 거룩하게 지키라.", "pron": "알랄라하닌 모 앙 아라우 응 사밧 앗 이빵일린 이또."},
-        {"id": "tc-5", "tl": "Igalang mo ang iyong ama at ina.", "en": "Honor your father and your mother.", "ko": "네 부모를 공경하라.", "pron": "이갈랑 모 앙 이욤 아마 앗 이나."},
-        {"id": "tc-6", "tl": "Huwag kang papatay.", "en": "You shall not murder.", "ko": "살인하지 말라.", "pron": "후왁 깡 빠빠따이."},
-        {"id": "tc-7", "tl": "Huwag kang mangangalunya.", "en": "You shall not commit adultery.", "ko": "간음하지 말라.", "pron": "후왁 깡 망앙알루냐."},
-        {"id": "tc-8", "tl": "Huwag kang magnanakaw.", "en": "You shall not steal.", "ko": "도둑질하지 말라.", "pron": "후왁 깡 막나나까우."},
-        {"id": "tc-9", "tl": "Huwag kang sasaksi ng kasinungalingan laban sa iyong kapwa.", "en": "You shall not give false testimony against your neighbor.", "ko": "이웃에 대하여 거짓 증거하지 말라.", "pron": "후왁 깡 사삭시 응 까시눙알링안 라반 사 이욤 깝와."},
-        {"id": "tc-10", "tl": "Huwag kang maiimbot sa anumang pag-aari ng iyong kapwa.", "en": "You shall not covet anything that belongs to your neighbor.", "ko": "이웃의 소유를 탐내지 말라.", "pron": "후왁 깡 마이임봇 사 아누망 빡아아리 응 이욤 깝와."}
+        {
+          "id": "tc-1",
+          "tl": "Huwag kang magkaroon ng ibang diyos maliban sa Akin.",
+          "en": "You shall have no other gods before me.",
+          "ko": "나 외에 다른 신들을 두지 말라.",
+          "pron": "후왁 깡 막까로온 응 이방 디요스 말리반 사 아낀."
+        },
+        {
+          "id": "tc-2",
+          "tl": "Huwag kang gagawa ng dios-diosan para sambahin.",
+          "en": "You shall not make idols to worship.",
+          "ko": "자신을 위하여 우상을 만들어 섬기지 말라.",
+          "pron": "후왁 깡 가가와 응 디오스디오산 빠라 삼바힌."
+        },
+        {
+          "id": "tc-3",
+          "tl": "Huwag mong babanggitin nang walang kabuluhan ang pangalan ng Panginoon.",
+          "en": "You shall not misuse the name of the Lord your God.",
+          "ko": "여호와의 이름을 망령되이 부르지 말라.",
+          "pron": "후왁 몽 바방기띤 낭 왈랑 까불루한 앙 빵알란 응 빵이노온."
+        },
+        {
+          "id": "tc-4",
+          "tl": "Alalahanin mo ang araw ng Sabbath at ipangilin ito.",
+          "en": "Remember the Sabbath day and keep it holy.",
+          "ko": "안식일을 기억하여 거룩하게 지키라.",
+          "pron": "알랄라하닌 모 앙 아라우 응 사밧 앗 이빵일린 이또."
+        },
+        {
+          "id": "tc-5",
+          "tl": "Igalang mo ang iyong ama at ina.",
+          "en": "Honor your father and your mother.",
+          "ko": "네 부모를 공경하라.",
+          "pron": "이갈랑 모 앙 이욤 아마 앗 이나."
+        },
+        {
+          "id": "tc-6",
+          "tl": "Huwag kang papatay.",
+          "en": "You shall not murder.",
+          "ko": "살인하지 말라.",
+          "pron": "후왁 깡 빠빠따이."
+        },
+        {
+          "id": "tc-7",
+          "tl": "Huwag kang mangangalunya.",
+          "en": "You shall not commit adultery.",
+          "ko": "간음하지 말라.",
+          "pron": "후왁 깡 망앙알루냐."
+        },
+        {
+          "id": "tc-8",
+          "tl": "Huwag kang magnanakaw.",
+          "en": "You shall not steal.",
+          "ko": "도둑질하지 말라.",
+          "pron": "후왁 깡 막나나까우."
+        },
+        {
+          "id": "tc-9",
+          "tl": "Huwag kang sasaksi ng kasinungalingan laban sa iyong kapwa.",
+          "en": "You shall not give false testimony against your neighbor.",
+          "ko": "이웃에 대하여 거짓 증거하지 말라.",
+          "pron": "후왁 깡 사삭시 응 까시눙알링안 라반 사 이욤 깝와."
+        },
+        {
+          "id": "tc-10",
+          "tl": "Huwag kang maiimbot sa anumang pag-aari ng iyong kapwa.",
+          "en": "You shall not covet anything that belongs to your neighbor.",
+          "ko": "이웃의 소유를 탐내지 말라.",
+          "pron": "후왁 깡 마이임봇 사 아누망 빡아아리 응 이욤 깝와."
+        }
       ]
     },
     {
-      "id": "worship-family-prayer", "title": "가정 기도문", "source": "직접 작성한 초안. 협력 교회 검수 필요",
+      "id": "worship-family-prayer",
+      "title": "가정 기도문",
+      "source": "사용자 제공 DATA/가정심방 기도문_따갈로그어 6주차.docx (따갈로그어·독음·한국어 뜻). 영어는 문서 영문 기반. 현지 검수 필요",
       "sentences": [
-        {"id": "fp-1", "tl": "Amang Diyos, salamat po sa tahanang ito at sa pamilyang ibinigay Ninyo.", "en": "Father God, thank you for this home and for the family you have given.", "ko": "하나님 아버지, 이 가정과 주신 가족에 감사드립니다.", "pron": "아망 디요스, 살라맛 뽀 사 따하난 이또 앗 사 빠밀리앙 이비비가이 닌요."},
-        {"id": "fp-2", "tl": "Bigyan Ninyo po sila ng kapayapaan at kalusugan.", "en": "Give them peace and good health.", "ko": "이 가족에게 평안과 건강을 주옵소서.", "pron": "빅얀 닌요 뽀 실라 응 까빠야빠안 앗 깔루수간."},
-        {"id": "fp-3", "tl": "Turuan Ninyo po silang magmahalan at magpatawaran sa isa't isa.", "en": "Teach them to love and forgive one another.", "ko": "서로 사랑하고 용서하도록 가르쳐 주옵소서.", "pron": "뚜루안 닌요 뽀 실랑 막마할란 앗 막빠따와란 사 이삿 이사."},
-        {"id": "fp-4", "tl": "Samahan Ninyo po sila sa araw-araw na gawain at pangangailangan.", "en": "Be with them in their daily work and needs.", "ko": "날마다의 일과 필요 가운데 함께해 주옵소서.", "pron": "사마한 닌요 뽀 실라 사 아라우아라우 나 가와인 앗 빵앙아일랑안."},
-        {"id": "fp-5", "tl": "Sa pangalan ni Hesus, Amen.", "en": "In Jesus' name, Amen.", "ko": "예수님의 이름으로 기도합니다. 아멘.", "pron": "사 빵알란 니 헤수스, 아멘."}
+        {
+          "id": "fp-1",
+          "tl": "Panginoon, salamat sa Maganda ng Pamilya na ito.",
+          "en": "God, thank you for meeting this beautiful family.",
+          "ko": "하나님, 가족을 주셔서 감사합니다.",
+          "pron": "빵이노온, 쌀라맛 싸 마간다 낭 빠밀리야 나 이또."
+        },
+        {
+          "id": "fp-2",
+          "tl": "Nais naming hilingin ang Iyong pagpapala sa pamilyang ito na may pag-ibig, kapayapaan, at kagalakan.",
+          "en": "We ask for your blessing upon this family with love, peace, and joy.",
+          "ko": "이 가정에 사랑과 평화와 기쁨의 축복을 내려 주시기를 바랍니다.",
+          "pron": "나이스 나밍 힐링인 앙 이용 빠그빠빨라 싸 빠밀리양 이또 나 마이 빡이빅, 까빠야빠안, 앗 까갈라깐."
+        },
+        {
+          "id": "fp-3",
+          "tl": "Pangalagaan Mo po ang kanilang tahanan at gabayan ang kanilang mga puso.",
+          "en": "Protect their home and guide their hearts.",
+          "ko": "그들의 집을 보호하시며 마음을 인도해 주세요.",
+          "pron": "빵알라가안 모 뽀 앙 까닝랑 따하난 앗 가바얀 앙 까닐랑 망아 뿌쏘."
+        },
+        {
+          "id": "fp-4",
+          "tl": "Sa pangalan ni Jesus kami nananalangin. Amen.",
+          "en": "In Jesus' name, we pray. Amen.",
+          "ko": "예수님의 이름으로 기도드립니다. 아멘!",
+          "pron": "싸 빵알란 니 예수스 까미 나나날란긴. 아멘."
+        }
       ]
     }
   ],
   "songs": [
     {
-      "id": "song-halina", "title": "Halina't sama-sama", "titleKo": "할리낫 사마사마", "singingLanguage": "tl", "category": "경배", "source": "사용자 제공 DATA/찬양가사_할리낫사마사마.jpg 전사",
+      "id": "song-halina",
+      "title": "Halina't sama-sama",
+      "titleKo": "할리낫 사마사마",
+      "singingLanguage": "tl",
+      "category": "경배",
+      "source": "사용자 제공 DATA/찬양가사_할리낫사마사마.jpg 전사",
       "lines": [
-        {"chords": ["E", "G#m", "A", "B7"], "text": "Halina't sama-sama, purihin natin Siya", "pron": "할리낫 사마사마, 뿌리힌 나띤 시야", "ko": "함께 모여 그를 찬양하자"},
-        {"chords": ["E", "G#m", "A", "B7"], "text": "Halina't sama-sama, awitan natin Siya", "pron": "할리낫 사마사마, 아위딴 나띤 시야", "ko": "함께 모여 그에게 노래하자"},
-        {"chords": ["A", "G#m", "A", "G#m"], "text": "Ipalakpak ang inyong kamay, itaas at ikaway", "pron": "이빨락빡 앙 이용 까마이, 이따아스 앗 이까와이", "ko": "손뼉을 치고 손을 들어 흔들며"},
-        {"chords": ["F#m", "B7", "E"], "text": "Lahat ay magsabing Diyos ay buhay", "pron": "라핫 아이 막사빙 디요사이 부하이", "ko": "살아계신 하나님을 고백하자"}
-      ]
+        {
+          "chords": [
+            "E",
+            "G#m",
+            "A",
+            "B7"
+          ],
+          "text": "Halina't sama-sama, purihin natin Siya",
+          "pron": "할리낫 사마사마, 뿌리힌 나띤 시야",
+          "ko": "함께 모여 그를 찬양하자"
+        },
+        {
+          "chords": [
+            "E",
+            "G#m",
+            "A",
+            "B7"
+          ],
+          "text": "Halina't sama-sama, awitan natin Siya",
+          "pron": "할리낫 사마사마, 아위딴 나띤 시야",
+          "ko": "함께 모여 그에게 노래하자"
+        },
+        {
+          "chords": [
+            "A",
+            "G#m",
+            "A",
+            "G#m"
+          ],
+          "text": "Ipalakpak ang inyong kamay, itaas at ikaway",
+          "pron": "이빨락빡 앙 이용 까마이, 이따아스 앗 이까와이",
+          "ko": "손뼉을 치고 손을 들어 흔들며"
+        },
+        {
+          "chords": [
+            "F#m",
+            "B7",
+            "E"
+          ],
+          "text": "Lahat ay magsabing Diyos ay buhay",
+          "pron": "라핫 아이 막사빙 디요사이 부하이",
+          "ko": "살아계신 하나님을 고백하자"
+        }
+      ],
+      "youtube": "https://youtu.be/ziVZbho1A4Q?si=QODcV3jxAl6sxlIP"
     },
     {
-      "id": "song-mabuting-diyos", "title": "Mabuting Diyos", "titleKo": "마부띵 디요스 (참 좋으신 하나님)", "singingLanguage": "tl", "category": "경배", "source": "사용자 제공 DATA/찬양가사_까이부띠부띠모빵이노언.jpg 전사",
+      "id": "song-mabuting-diyos",
+      "title": "Mabuting Diyos",
+      "titleKo": "마부띵 디요스 (참 좋으신 하나님)",
+      "singingLanguage": "tl",
+      "category": "경배",
+      "source": "사용자 제공 DATA/찬양가사_까이부띠부띠모빵이노언.jpg 전사",
       "lines": [
-        {"chords": ["D", "F#m", "Bm"], "text": "Kay buti-buti mo, Panginoon", "pron": "까이 부띠부띠 모, 빵이노온", "ko": "참 좋으신 하나님"},
-        {"chords": ["G", "A", "G", "A"], "text": "Sa lahat ng oras, sa bawat araw", "pron": "사라핫 낭 오라스 사 바왓 아라우", "ko": "언제나 매일 매일"},
-        {"chords": ["D", "F#m", "Bm"], "text": "Ika'y laging tapat kung magmahal", "pron": "이까이 라깅 따빳 꿍 막마할", "ko": "우리들을 사랑하실 때"},
-        {"chords": ["G", "A", "D"], "text": "Ang iyong kaawaan ay magpawalang hanggan", "pron": "앙 이용 까아와(안) 아이 막빠왈랑 항간", "ko": "당신은 신실하시고 당신의 자비는 영원합니다."},
-        {"chords": ["G", "A", "D"], "text": "Pinupuri sinasamba kita", "pron": "삐누뿌리 씨나쌈바 끼따", "ko": "찬양드리며 예배합니다."},
-        {"chords": ["G", "A", "D"], "text": "Dakilang Diyos at Panginoon", "pron": "다낄랑 디오스 앗 빵이노온", "ko": "위대한 나의 주 하나님"},
-        {"chords": ["G", "A"], "text": "Tunay ngang ika'y walang katulad", "pron": "뚜나이 낭 이까이 왈랑 까뚤랏", "ko": "진실로 비교할 수 없으며"},
-        {"chords": ["F#m", "Bm"], "text": "Tunay ngang ika'y di nagbabago", "pron": "뚜나이 낭 이까이 디 낙바바고", "ko": "진실로 변함이 없으십니다."},
-        {"chords": ["G", "A", "D"], "text": "Mabuting ang Diyos na sa ami'y nagmamahal", "pron": "마부띵 앙 디오스 나 사 아미이 낙마마할", "ko": "나를 사랑하시는 좋으신 하나님"}
-      ]
-    },
-    {
-      "id": "song-amazing-grace", "title": "Amazing Grace", "titleKo": "나 같은 죄인 살리신", "singingLanguage": "en", "category": "찬송", "source": "John Newton 원문 1절 (공개 저작물 판본). 한국어 뜻은 직접 작성 초안, 따갈로그어 가창 가사 없음",
-      "lines": [
-        {"chords": [], "text": "Amazing grace! How sweet the sound,", "pron": "", "ko": "놀라운 은혜, 그 소리 얼마나 달콤한가"},
-        {"chords": [], "text": "That saved a wretch like me!", "pron": "", "ko": "나 같은 사람을 구원하셨네"},
-        {"chords": [], "text": "I once was lost, but now am found;", "pron": "", "ko": "한때 길을 잃었으나 이제는 찾음을 받았고"},
-        {"chords": [], "text": "Was blind, but now I see.", "pron": "", "ko": "눈이 멀었으나 이제는 보네"}
-      ]
-    },
-    {
-      "id": "song-what-a-friend", "title": "What a Friend We Have in Jesus", "titleKo": "죄 짐 맡은 우리 구주", "singingLanguage": "en", "category": "찬송", "source": "Joseph M. Scriven 원문 1절 (공개 저작물 판본). 한국어 뜻은 직접 작성 초안, 따갈로그어 가창 가사 없음",
-      "lines": [
-        {"chords": [], "text": "What a friend we have in Jesus,", "pron": "", "ko": "예수님은 우리에게 얼마나 좋은 친구이신가"},
-        {"chords": [], "text": "All our sins and griefs to bear!", "pron": "", "ko": "우리의 모든 죄와 슬픔을 짊어지시네"},
-        {"chords": [], "text": "What a privilege to carry", "pron": "", "ko": "가져갈 수 있다는 것이 얼마나 큰 특권인가"},
-        {"chords": [], "text": "Everything to God in prayer!", "pron": "", "ko": "모든 것을 기도로 하나님께"}
-      ]
-    },
-    {
-      "id": "song-jesus-loves-me", "title": "Jesus Loves Me", "titleKo": "예수 사랑하심은", "singingLanguage": "en", "category": "찬송", "source": "Anna B. Warner 원문 1절 (공개 저작물 판본). 한국어 뜻은 직접 작성 초안, 따갈로그어 가창 가사 없음",
-      "lines": [
-        {"chords": [], "text": "Jesus loves me! This I know,", "pron": "", "ko": "예수님이 나를 사랑하십니다. 나는 이것을 압니다"},
-        {"chords": [], "text": "For the Bible tells me so;", "pron": "", "ko": "성경이 그렇게 말해 주기 때문입니다"},
-        {"chords": [], "text": "Little ones to Him belong,", "pron": "", "ko": "어린아이들은 그분께 속했고"},
-        {"chords": [], "text": "They are weak, but He is strong.", "pron": "", "ko": "그들은 약하나 그분은 강하십니다"}
-      ]
+        {
+          "chords": [
+            "D",
+            "F#m",
+            "Bm"
+          ],
+          "text": "Kay buti-buti mo, Panginoon",
+          "pron": "까이 부띠부띠 모, 빵이노온",
+          "ko": "참 좋으신 하나님"
+        },
+        {
+          "chords": [
+            "G",
+            "A",
+            "G",
+            "A"
+          ],
+          "text": "Sa lahat ng oras, sa bawat araw",
+          "pron": "사라핫 낭 오라스 사 바왓 아라우",
+          "ko": "언제나 매일 매일"
+        },
+        {
+          "chords": [
+            "D",
+            "F#m",
+            "Bm"
+          ],
+          "text": "Ika'y laging tapat kung magmahal",
+          "pron": "이까이 라깅 따빳 꿍 막마할",
+          "ko": "우리들을 사랑하실 때"
+        },
+        {
+          "chords": [
+            "G",
+            "A",
+            "D"
+          ],
+          "text": "Ang iyong kaawaan ay magpawalang hanggan",
+          "pron": "앙 이용 까아와(안) 아이 막빠왈랑 항간",
+          "ko": "당신은 신실하시고 당신의 자비는 영원합니다."
+        },
+        {
+          "chords": [
+            "G",
+            "A",
+            "D"
+          ],
+          "text": "Pinupuri sinasamba kita",
+          "pron": "삐누뿌리 씨나쌈바 끼따",
+          "ko": "찬양드리며 예배합니다."
+        },
+        {
+          "chords": [
+            "G",
+            "A",
+            "D"
+          ],
+          "text": "Dakilang Diyos at Panginoon",
+          "pron": "다낄랑 디오스 앗 빵이노온",
+          "ko": "위대한 나의 주 하나님"
+        },
+        {
+          "chords": [
+            "G",
+            "A"
+          ],
+          "text": "Tunay ngang ika'y walang katulad",
+          "pron": "뚜나이 낭 이까이 왈랑 까뚤랏",
+          "ko": "진실로 비교할 수 없으며"
+        },
+        {
+          "chords": [
+            "F#m",
+            "Bm"
+          ],
+          "text": "Tunay ngang ika'y di nagbabago",
+          "pron": "뚜나이 낭 이까이 디 낙바바고",
+          "ko": "진실로 변함이 없으십니다."
+        },
+        {
+          "chords": [
+            "G",
+            "A",
+            "D"
+          ],
+          "text": "Mabuting ang Diyos na sa ami'y nagmamahal",
+          "pron": "마부띵 앙 디오스 나 사 아미이 낙마마할",
+          "ko": "나를 사랑하시는 좋으신 하나님"
+        }
+      ],
+      "youtube": "https://youtu.be/evtn5sNVESo?si=5ZnlWza1Abo9iO5k"
     }
   ],
   "gospel": {
-    "id": "gospel-cards", "title": "복음 안내 카드", "source": "성경 근거 직접 작성 초안 (요 3:16, 롬 3:23, 롬 5:8, 요 1:12). 협력 교회 검수 필요",
+    "id": "gospel-cards",
+    "title": "복음 안내 카드",
+    "source": "성경 근거 직접 작성 초안 (요 3:16, 롬 3:23, 롬 5:8, 요 1:12). 협력 교회 검수 필요 / 성경 본문: 따갈로그어 Ang Dating Biblia(1905), 영어 WEB, 한국어 개역한글 — 기억 기반 입력이므로 실제 성경과 대조 필수, 독음은 초안",
     "cards": [
-      {"id": "gc-1", "tl": "Maaari ba tayong mag-usap tungkol sa Diyos?", "en": "May we talk about God?", "ko": "하나님에 대해 이야기 나눠도 될까요?", "pron": "마아아리 바 따용 막우삽 뚱꼴 사 디요스?", "guide": "대화 의사를 먼저 묻고, 거절하면 존중하며 기도만 제안합니다."},
-      {"id": "gc-2", "tl": "Mahal ka ng Diyos at may magandang plano Siya para sa iyo.", "en": "God loves you and has a good plan for you.", "ko": "하나님은 당신을 사랑하시며 좋은 계획을 갖고 계십니다.", "pron": "마할 까 응 디요스 앗 마이 마간당 쁠라노 시야 빠라 사 이요.", "guide": "요한복음 3:16을 함께 읽습니다."},
-      {"id": "gc-3", "tl": "Nagkasala ang lahat, kaya nahiwalay tayo sa Diyos.", "en": "All have sinned, so we are separated from God.", "ko": "모든 사람이 죄를 지어 하나님과 멀어졌습니다.", "pron": "낙까살라 앙 라핫, 까야 나히왈라이 따요 사 디요스.", "guide": "로마서 3:23. 정죄하는 어조를 피하고 모두에게 해당됨을 강조합니다."},
-      {"id": "gc-4", "tl": "Namatay si Hesus sa krus para sa atin at muling nabuhay.", "en": "Jesus died on the cross for us and rose again.", "ko": "예수님이 우리를 위해 십자가에서 죽으시고 다시 살아나셨습니다.", "pron": "나마따이 시 헤수스 사 크루스 빠라 사 아띤 앗 무울링 나부하이.", "guide": "로마서 5:8."},
-      {"id": "gc-5", "tl": "Maaari mong tanggapin si Hesus sa iyong buhay ngayon.", "en": "You can receive Jesus into your life today.", "ko": "오늘 예수님을 삶에 영접할 수 있습니다.", "pron": "마아아리 몽 딴가삔 시 헤수스 사 이욤 부하이 응아용.", "guide": "요한복음 1:12. 준비되면 영접 기도문으로 이어갑니다."}
+      {
+        "id": "gc-1",
+        "tl": "Maaari ba tayong mag-usap tungkol sa Diyos?",
+        "en": "May we talk about God?",
+        "ko": "하나님에 대해 이야기 나눠도 될까요?",
+        "pron": "마아아리 바 따용 막우삽 뚱꼴 사 디요스?",
+        "guide": "대화 의사를 먼저 묻고, 거절하면 존중하며 기도만 제안합니다."
+      },
+      {
+        "id": "gc-2",
+        "tl": "Mahal ka ng Diyos at may magandang plano Siya para sa iyo.",
+        "en": "God loves you and has a good plan for you.",
+        "ko": "하나님은 당신을 사랑하시며 좋은 계획을 갖고 계십니다.",
+        "pron": "마할 까 응 디요스 앗 마이 마간당 쁠라노 시야 빠라 사 이요.",
+        "guide": "요한복음 3:16을 함께 읽습니다.",
+        "verse": {
+          "ref": "요한복음 3:16",
+          "tl": "Sapagka't gayon na lamang ang pagibig ng Dios sa sanglibutan, na ibinigay niya ang kaniyang bugtong na Anak, upang ang sinomang sumampalataya sa kaniya ay huwag mapahamak, kundi magkaroon ng buhay na walang hanggan.",
+          "en": "For God so loved the world, that he gave his only born Son, that whoever believes in him should not perish, but have eternal life.",
+          "ko": "하나님이 세상을 이처럼 사랑하사 독생자를 주셨으니 이는 저를 믿는 자마다 멸망치 않고 영생을 얻게 하려 하심이라",
+          "pron": "싸빡까트 가욘 나 라망 앙 빠기빅 낭 디요스 사 상리부탄, 나 이비비가이 니야 앙 까니양 북똥 나 아난, 우빵 앙 시노만 숨암빨라따야 사 까니야 아이 후왁 마빠하막, 꾼디 막까로온 낭 부하이 나 왈랑 항간."
+        }
+      },
+      {
+        "id": "gc-3",
+        "tl": "Nagkasala ang lahat, kaya nahiwalay tayo sa Diyos.",
+        "en": "All have sinned, so we are separated from God.",
+        "ko": "모든 사람이 죄를 지어 하나님과 멀어졌습니다.",
+        "pron": "낙까살라 앙 라핫, 까야 나히왈라이 따요 사 디요스.",
+        "guide": "로마서 3:23. 정죄하는 어조를 피하고 모두에게 해당됨을 강조합니다.",
+        "verse": {
+          "ref": "로마서 3:23",
+          "tl": "Sapagka't ang lahat ay nagsigawa ng kasalanan, at hindi nakaabot sa kaluwalhatian ng Dios;",
+          "en": "for all have sinned, and fall short of the glory of God;",
+          "ko": "모든 사람이 죄를 범하였으매 하나님의 영광에 이르지 못하더니",
+          "pron": "싸빡까트 앙 라핫 아이 낙시가와 낭 까살라난, 앗 힌디 나까아밧 사 까룰루와가얀 낭 디요스;"
+        }
+      },
+      {
+        "id": "gc-4",
+        "tl": "Namatay si Hesus sa krus para sa atin at muling nabuhay.",
+        "en": "Jesus died on the cross for us and rose again.",
+        "ko": "예수님이 우리를 위해 십자가에서 죽으시고 다시 살아나셨습니다.",
+        "pron": "나마따이 시 헤수스 사 크루스 빠라 사 아띤 앗 무울링 나부하이.",
+        "guide": "로마서 5:8.",
+        "verse": {
+          "ref": "로마서 5:8",
+          "tl": "Nguni't pinatutunayan ng Dios ang kaniyang sariling pagibig sa atin, na noong tayo'y makasalanan pa, ay namatay si Cristo dahil sa atin.",
+          "en": "But God commends his own love toward us, in that while we were yet sinners, Christ died for us.",
+          "ko": "우리가 아직 죄인 되었을 때에 그리스도께서 우리를 위하여 죽으심으로 하나님께서 우리에 대한 자기의 사랑을 확증하셨느니라",
+          "pron": "응구닛 삐나뚜뚜나얀 낭 디요스 앙 까니양 사릴링 빠기빅 사 아띤, 나 노옹 따요이 마까살라난 빠, 아이 나마따이 씨 끄리스또 다힐 사 아띤."
+        }
+      },
+      {
+        "id": "gc-5",
+        "tl": "Maaari mong tanggapin si Hesus sa iyong buhay ngayon.",
+        "en": "You can receive Jesus into your life today.",
+        "ko": "오늘 예수님을 삶에 영접할 수 있습니다.",
+        "pron": "마아아리 몽 딴가삔 시 헤수스 사 이욤 부하이 응아용.",
+        "guide": "요한복음 1:12. 준비되면 영접 기도문으로 이어갑니다.",
+        "verse": {
+          "ref": "요한복음 1:12",
+          "tl": "Datapuwa't ang lahat ng sa kaniya'y nagsitanggap, ay binigyan niya ng karapatang maging mga anak ng Dios, sa makatuwid baga'y ang mga sumasampalataya sa kaniyang pangalan:",
+          "en": "But as many as received him, to them he gave the right to become God's children, to those who believe in his name:",
+          "ko": "영접하는 자 곧 그 이름을 믿는 자들에게는 하나님의 자녀가 되는 권세를 주셨으니",
+          "pron": "다따뿌와트 앙 라핫 응 사 까니야이 낙시따응갑, 아이 비닉얀 니야 응 까라빠땅 마깅 망아 아낙 낭 디요스, 사 마까뚜위드 바가이 앙 망아 숨암빨라따야 사 까니양 빵알란."
+        }
+      }
     ],
-    "prayer": {"id": "gp-1", "tl": "Panginoong Hesus, salamat po sa Inyong pagmamahal. Patawarin Ninyo po ako sa aking mga kasalanan. Tinatanggap ko Kayo sa aking buhay bilang Tagapagligtas. Amen.", "en": "Lord Jesus, thank you for your love. Forgive me for my sins. I receive you into my life as my Savior. Amen.", "ko": "주 예수님, 사랑해 주셔서 감사합니다. 저의 죄를 용서해 주세요. 저의 구주로 삶에 영접합니다. 아멘.", "pron": "빵이노옹 헤수스, 살라맛 뽀 사 인용 빡마마할. 빠따와린 닌요 뽀 아꼬 사 아잉 망아 까살라난. 띠나땅가삔 꼬 까요 사 아잉 부하이 비랑 따가빠글리가또. 아멘."}
+    "prayer": {
+      "id": "gp-1",
+      "tl": "Panginoong Hesus, salamat po sa Inyong pagmamahal. Patawarin Ninyo po ako sa aking mga kasalanan. Tinatanggap ko Kayo sa aking buhay bilang Tagapagligtas. Amen.",
+      "en": "Lord Jesus, thank you for your love. Forgive me for my sins. I receive you into my life as my Savior. Amen.",
+      "ko": "주 예수님, 사랑해 주셔서 감사합니다. 저의 죄를 용서해 주세요. 저의 구주로 삶에 영접합니다. 아멘.",
+      "pron": "빵이노옹 헤수스, 살라맛 뽀 사 인용 빡마마할. 빠따와린 닌요 뽀 아꼬 사 아잉 망아 까살라난. 띠나땅가삔 꼬 까요 사 아잉 부하이 비랑 따가빠글리가또. 아멘."
+    }
   },
   "contacts": [
-    {"id": "contact-lodging", "name": "숙소 (위치 메모)", "phone": "", "memo": "B6 L8 Santan St., Bermuda Heights, Antipolo City, Rizal, Philippines. 전화번호 미제공 — 출국 전 팀장이 확인", "source": "사용자 제공 DATA/기본 정보.txt", "checkedOn": ""}
+    {
+      "id": "contact-lodging",
+      "name": "숙소 (위치 메모)",
+      "phone": "",
+      "memo": "B6 L8 Santan St., Bermuda Heights, Antipolo City, Rizal, Philippines. 전화번호 미제공 — 출국 전 팀장이 확인",
+      "source": "사용자 제공 DATA/기본 정보.txt",
+      "checkedOn": ""
+    }
   ],
   "fieldDocuments": [
-    {"id": "doc-schedule", "type": "pdf", "title": "선교 일정", "asset": "schedule.pdf", "docDate": "2026-09-24~26 (원본 문서 기준)", "note": "원본에 개인 사정이 포함되어 있어 배포 전 사본 제작 필요"},
-    {"id": "doc-message", "type": "text", "title": "가정심방 말씀", "asset": "home-message", "docDate": "", "note": "HWPX 원문 텍스트"},
-    {"id": "doc-order", "type": "image", "title": "예배 순서", "asset": "service-order.jpg", "docDate": "", "note": "제공 JPG"}
+    {
+      "id": "doc-schedule",
+      "type": "pdf",
+      "title": "선교 일정",
+      "asset": "schedule.pdf",
+      "docDate": "2026-09-24~26 (원본 문서 기준)",
+      "note": "원본에 개인 사정이 포함되어 있어 배포 전 사본 제작 필요"
+    },
+    {
+      "id": "doc-message",
+      "type": "text",
+      "title": "가정심방 말씀",
+      "asset": "home-message",
+      "docDate": "",
+      "note": "HWPX 원문 텍스트"
+    },
+    {
+      "id": "doc-order",
+      "type": "image",
+      "title": "예배 순서",
+      "asset": "service-order.jpg",
+      "docDate": "",
+      "note": "제공 JPG"
+    }
   ]
 }

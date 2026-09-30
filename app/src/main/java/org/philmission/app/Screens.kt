@@ -5,6 +5,9 @@ import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
 import android.content.Intent
+import android.net.ConnectivityManager
+import android.net.Network
+import android.net.NetworkCapabilities
 import android.net.Uri
 import android.widget.Toast
 import androidx.compose.foundation.layout.*
@@ -16,6 +19,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontFamily
@@ -50,7 +54,7 @@ private fun Section(text: String) = Text(text, style = MaterialTheme.typography.
 fun WorshipHome(content: Content, push: (String) -> Unit) {
     LazyColumn(contentPadding = PaddingValues(16.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
         item { Section("예배문·기도문") }
-        items(content.worship, key = { it.id }) { NavCard(it.title, "${it.sentences.size}문장") { push("w:${it.id}") } }
+        items(content.worship, key = { it.id }) { NavCard(it.title) { push("w:${it.id}") } }
         item { Section("찬양") }
         items(content.songs, key = { it.id }) { NavCard(it.titleKo, it.title + if (it.hasChords) " · 코드" else "") { push("s:${it.id}") } }
         item { Section("가정심방") }
@@ -87,6 +91,7 @@ fun PhraseList(content: Content, language: String, favorites: List<String>, push
     var onlyFavorites by rememberSaveable { mutableStateOf(false) }
     var expanded by remember { mutableStateOf(false) }
     Column {
+        Button(onClick = { push("translate") }, modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 8.dp)) { Text("음성 통역 (한국어 ↔ 따갈로그어)") }
         OutlinedTextField(
             value = query, onValueChange = { query = it }, label = { Text("한국어 · 따갈로그어 · 영어 검색") },
             modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 8.dp), singleLine = true,
@@ -108,6 +113,7 @@ fun PhraseList(content: Content, language: String, favorites: List<String>, push
                     Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
                         Text((if (item.id in favorites) "★ " else "") + item.ko, style = MaterialTheme.typography.titleMedium)
                         Text(item.text(language), fontSize = 18.sp)
+                        if (language == "tl") Text(item.pronunciation, color = MaterialTheme.colorScheme.primary, fontSize = 18.sp)
                     }
                 }
             }
@@ -118,8 +124,8 @@ fun PhraseList(content: Content, language: String, favorites: List<String>, push
 @Composable
 fun PhraseDetail(phrase: Phrase, language: String, size: Float, favorite: Boolean, onFavorite: (Boolean) -> Unit, onLarge: () -> Unit) {
     Column(Modifier.verticalScroll(rememberScrollState()).padding(20.dp), verticalArrangement = Arrangement.spacedBy(20.dp)) {
-        Text(phrase.text(language), fontSize = size.sp, lineHeight = (size * 1.5f).sp)
-        if (language == "tl") Text(phrase.pronunciation, color = MaterialTheme.colorScheme.primary, fontSize = (size * 0.8f).sp)
+        Text(phrase.text(language), fontSize = (if (language == "tl") size * 0.8f else size).sp, lineHeight = (if (language == "tl") size * 1.0f else size * 1.5f).sp)
+        if (language == "tl") Text(phrase.pronunciation, color = MaterialTheme.colorScheme.primary, fontSize = size.sp, lineHeight = (size * 1.5f).sp)
         Text(phrase.ko, fontSize = (size * 0.85f).sp)
         Button(onClick = onLarge, modifier = Modifier.fillMaxWidth()) { Text("큰 글씨로 보여주기") }
         OutlinedButton(onClick = { onFavorite(!favorite) }) { Text(if (favorite) "즐겨찾기 해제" else "즐겨찾기 추가") }
@@ -139,13 +145,32 @@ fun WorshipScreen(doc: Worship, language: String, size: Float) {
     LazyColumn(contentPadding = PaddingValues(20.dp), verticalArrangement = Arrangement.spacedBy(24.dp)) {
         items(doc.sentences, key = { it.id }) { s ->
             Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
-                Text(s.text(language), fontSize = size.sp, lineHeight = (size * 1.5f).sp)
-                if (language == "tl") Text(s.pron, color = MaterialTheme.colorScheme.primary, fontSize = (size * 0.75f).sp)
+                Text(s.text(language), fontSize = (if (language == "tl") size * 0.75f else size).sp, lineHeight = (if (language == "tl") size * 0.95f else size * 1.5f).sp)
+                if (language == "tl") Text(s.pron, color = MaterialTheme.colorScheme.primary, fontSize = size.sp, lineHeight = (size * 1.5f).sp)
                 Text(s.ko, fontSize = (size * 0.75f).sp)
             }
         }
         item { Text("출처: ${doc.source}", style = MaterialTheme.typography.bodySmall) }
     }
+}
+
+/** 인터넷 연결 여부. 연결이 바뀌면 바로 갱신한다. */
+@Composable
+internal fun rememberIsOnline(): Boolean {
+    val context = LocalContext.current
+    val manager = remember { context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager }
+    fun current(): Boolean = manager.getNetworkCapabilities(manager.activeNetwork)?.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET) == true
+    var online by remember { mutableStateOf(current()) }
+    DisposableEffect(manager) {
+        val callback = object : ConnectivityManager.NetworkCallback() {
+            override fun onAvailable(network: Network) { online = current() }
+            override fun onLost(network: Network) { online = current() }
+            override fun onCapabilitiesChanged(network: Network, caps: NetworkCapabilities) { online = current() }
+        }
+        manager.registerDefaultNetworkCallback(callback)
+        onDispose { manager.unregisterNetworkCallback(callback) }
+    }
+    return online
 }
 
 @Composable
@@ -155,6 +180,18 @@ fun SongScreen(song: Song, size: Float) {
         item {
             Text(song.title, style = MaterialTheme.typography.headlineSmall)
             Text(if (song.singingLanguage == "tl") "가창 언어: 따갈로그어" else "가창 언어: 영어 (따갈로그어 가창 가사 없음)", style = MaterialTheme.typography.bodySmall)
+            if (song.youtube.isNotBlank()) {
+                val context = LocalContext.current
+                val online = rememberIsOnline()
+                Button(
+                    onClick = {
+                        try { context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(song.youtube))) }
+                        catch (_: ActivityNotFoundException) { Toast.makeText(context, "링크를 열 수 있는 앱이 없습니다.", Toast.LENGTH_SHORT).show() }
+                    },
+                    enabled = online,
+                ) { Text("유튜브에서 듣기") }
+                if (!online) Text("인터넷에 연결되어 있지 않아 사용할 수 없습니다.", style = MaterialTheme.typography.bodySmall)
+            }
             if (song.hasChords) Row(verticalAlignment = androidx.compose.ui.Alignment.CenterVertically) {
                 Switch(checked = showChords, onCheckedChange = { showChords = it })
                 Spacer(Modifier.width(8.dp)); Text("코드 표시")
@@ -163,12 +200,31 @@ fun SongScreen(song: Song, size: Float) {
         items(song.lines) { line ->
             Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
                 if (showChords && line.chords.isNotEmpty()) Text(line.chords.joinToString("   "), color = MaterialTheme.colorScheme.primary, fontFamily = FontFamily.Monospace, fontSize = (size * 0.85f).sp)
-                Text(line.text, fontSize = size.sp, lineHeight = (size * 1.4f).sp)
-                if (line.pron.isNotBlank()) Text(line.pron, color = MaterialTheme.colorScheme.primary, fontSize = (size * 0.75f).sp)
+                Text(line.text, fontSize = (if (line.pron.isNotBlank()) size * 0.75f else size).sp, lineHeight = (if (line.pron.isNotBlank()) size * 0.95f else size * 1.4f).sp)
+                if (line.pron.isNotBlank()) Text(line.pron, color = MaterialTheme.colorScheme.primary, fontSize = size.sp, lineHeight = (size * 1.4f).sp)
                 Text(line.ko, fontSize = (size * 0.75f).sp)
             }
         }
         item { Text("출처: ${song.source}", style = MaterialTheme.typography.bodySmall) }
+    }
+}
+
+private enum class BlockKind { KOREAN, TAGALOG, PRONUNCIATION }
+
+/** 원문은 한국어/따갈로그어/독음 순서로 묶여 있다. 라틴 문자가 많은 블록은 따갈로그어, 그 직후 같은 개수의 한글 블록은 독음. */
+private fun classifyMessageBlocks(blocks: List<String>): List<Pair<BlockKind, String>> {
+    var tagalogRun = 0
+    var pronunciationLeft = 0
+    return blocks.map { text ->
+        val latin = text.count { it in 'A'..'Z' || it in 'a'..'z' }
+        val hangul = text.count { it in '가'..'힣' }
+        if (latin > hangul) {
+            tagalogRun++
+            BlockKind.TAGALOG to text
+        } else {
+            if (tagalogRun > 0) { pronunciationLeft = tagalogRun; tagalogRun = 0 }
+            if (pronunciationLeft > 0) { pronunciationLeft--; BlockKind.PRONUNCIATION to text } else BlockKind.KOREAN to text
+        }
     }
 }
 
@@ -177,7 +233,12 @@ fun MessageScreen(content: Content, size: Float) {
     LazyColumn(Modifier.fillMaxSize(), contentPadding = PaddingValues(20.dp), verticalArrangement = Arrangement.spacedBy(16.dp)) {
         item { Text(content.messageTitle, style = MaterialTheme.typography.headlineSmall) }
         item { Text("제공 원문 · 따갈로그어 / 한국어 / 독음이 섞여 있습니다. 영어 번역과 문단별 대응은 준비 중입니다.", style = MaterialTheme.typography.bodySmall) }
-        items(content.messageBlocks) { Text(it, fontSize = size.sp, lineHeight = (size * 1.5f).sp) }
+        items(classifyMessageBlocks(content.messageBlocks)) { (kind, text) ->
+            when (kind) {
+                BlockKind.PRONUNCIATION -> Text(text, color = MaterialTheme.colorScheme.primary, fontSize = size.sp, lineHeight = (size * 1.5f).sp)
+                else -> Text(text, fontSize = (size * 0.75f).sp, lineHeight = (size * 0.95f).sp)
+            }
+        }
     }
 }
 
@@ -186,17 +247,18 @@ fun MessageScreen(content: Content, size: Float) {
 @Composable
 fun GospelScreen(cards: List<GospelCard>, language: String, size: Float) {
     var index by rememberSaveable(cards.size) { mutableIntStateOf(0) }
-    var guideOpen by rememberSaveable { mutableStateOf(false) }
     val card = cards[index.coerceIn(0, cards.lastIndex)]
     Column(Modifier.fillMaxSize().padding(20.dp), verticalArrangement = Arrangement.spacedBy(16.dp)) {
         Column(Modifier.weight(1f).verticalScroll(rememberScrollState()), verticalArrangement = Arrangement.spacedBy(16.dp)) {
             if (cards.size > 1) Text("${index + 1} / ${cards.size}", style = MaterialTheme.typography.titleMedium)
-            Text(card.text(language), fontSize = (size * 1.3f).sp, lineHeight = (size * 1.9f).sp)
-            if (language == "tl") Text(card.pron, color = MaterialTheme.colorScheme.primary, fontSize = (size * 0.75f).sp)
-            TextButton(onClick = { guideOpen = !guideOpen }) { Text(if (guideOpen) "안내자용 한국어 설명 닫기" else "안내자용 한국어 설명 열기") }
-            if (guideOpen) {
-                Text(card.ko, fontSize = (size * 0.85f).sp)
-                if (card.guide.isNotBlank()) Text(card.guide, style = MaterialTheme.typography.bodyMedium)
+            Text(card.text(language), fontSize = (if (language == "tl") size * 0.75f else size * 1.3f).sp, lineHeight = (if (language == "tl") size * 0.95f else size * 1.9f).sp)
+            if (language == "tl") Text(card.pron, color = MaterialTheme.colorScheme.primary, fontSize = (size * 1.3f).sp, lineHeight = (size * 1.9f).sp)
+            Text(card.ko, fontSize = (size * 0.9f).sp, lineHeight = (size * 1.2f).sp)
+            card.verse?.let { v ->
+                Text(v.ref, style = MaterialTheme.typography.titleMedium)
+                Text(v.text(language), fontSize = (if (language == "tl") size * 0.75f else size).sp, lineHeight = (if (language == "tl") size * 0.95f else size * 1.5f).sp)
+                if (language == "tl") Text(v.pron, color = MaterialTheme.colorScheme.primary, fontSize = size.sp, lineHeight = (size * 1.5f).sp)
+                Text(v.ko, fontSize = (size * 0.75f).sp, lineHeight = (size * 0.95f).sp)
             }
         }
         if (cards.size > 1) Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {

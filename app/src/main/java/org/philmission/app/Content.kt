@@ -15,10 +15,13 @@ data class Sentence(val id: String, val tl: String, val en: String, val ko: Stri
 }
 data class Worship(val id: String, val title: String, val source: String, val sentences: List<Sentence>)
 data class SongLine(val chords: List<String>, val text: String, val pron: String, val ko: String)
-data class Song(val id: String, val title: String, val titleKo: String, val singingLanguage: String, val category: String, val source: String, val lines: List<SongLine>) {
+data class Song(val id: String, val title: String, val titleKo: String, val singingLanguage: String, val category: String, val source: String, val lines: List<SongLine>, val youtube: String = "") {
     val hasChords get() = lines.any { it.chords.isNotEmpty() }
 }
-data class GospelCard(val id: String, val tl: String, val en: String, val ko: String, val pron: String, val guide: String) {
+data class Verse(val ref: String, val tl: String, val en: String, val ko: String, val pron: String) {
+    fun text(language: String) = if (language == "en") en else tl
+}
+data class GospelCard(val id: String, val tl: String, val en: String, val ko: String, val pron: String, val guide: String, val verse: Verse? = null) {
     fun text(language: String) = if (language == "en") en else tl
 }
 data class BaseContact(val id: String, val name: String, val phone: String, val memo: String, val source: String, val checkedOn: String)
@@ -57,7 +60,7 @@ data class Content(
                     Song(s.getString("id"), s.getString("title"), s.getString("titleKo"), s.getString("singingLanguage"), s.getString("category"), s.getString("source"),
                         s.getJSONArray("lines").map { l ->
                             SongLine(l.getJSONArray("chords").let { c -> (0 until c.length()).map { c.getString(it) } }, l.getString("text"), l.getString("pron"), l.getString("ko"))
-                        })
+                        }, s.optString("youtube", ""))
                 },
                 gospelCards = gospel.getJSONArray("cards").map(::gospelCard),
                 gospelPrayer = gospelCard(gospel.getJSONObject("prayer")),
@@ -70,7 +73,8 @@ data class Content(
             )
         }
 
-        private fun gospelCard(o: JSONObject) = GospelCard(o.getString("id"), o.getString("tl"), o.getString("en"), o.getString("ko"), o.getString("pron"), o.optString("guide", ""))
+        private fun gospelCard(o: JSONObject) = GospelCard(o.getString("id"), o.getString("tl"), o.getString("en"), o.getString("ko"), o.getString("pron"), o.optString("guide", ""),
+            o.optJSONObject("verse")?.let { Verse(it.getString("ref"), it.getString("tl"), it.getString("en"), it.getString("ko"), it.getString("pron")) })
     }
 }
 
