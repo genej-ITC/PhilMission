@@ -31,6 +31,7 @@ class MainActivity : ComponentActivity() {
                 var content by remember { mutableStateOf<Content?>(null) }
                 var error by remember { mutableStateOf(false) }
                 LaunchedEffect(Unit) {
+                    withContext(Dispatchers.IO) { purgeLegacyScheduleCache(applicationContext) }
                     val result = withContext(Dispatchers.IO) { runCatching { Content.load(applicationContext) } }
                     content = result.getOrNull()
                     error = result.isFailure
@@ -136,7 +137,7 @@ fun MissionApp(content: Content, users: UserStore) {
                 route.startsWith("w:") -> content.worship.find { it.id == route.removePrefix("w:") }?.let { WorshipScreen(it, language, base) }
                 route.startsWith("s:") -> content.songs.find { it.id == route.removePrefix("s:") }?.let { SongScreen(it, base) }
                 route == "msg" -> MessageScreen(content, base)
-                route == "img" -> ImageAssetScreen("service-order.jpg", "예배 순서")
+                route == "img" -> ServiceOrderScreen()
                 route.startsWith("pdf:") -> PdfAssetScreen(route.removePrefix("pdf:"))
                 route == "gospel" -> GospelScreen(content.gospelCards, language, base)
                 route == "prayer" -> GospelScreen(listOf(content.gospelPrayer), language, base)

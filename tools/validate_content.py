@@ -39,8 +39,6 @@ def validate(data, release=False):
                 errors.append(f'release requires {count} {group}')
         if len(data.get('gospel',{}).get('cards',[])) < 1:
             errors.append('release requires gospel cards')
-        if not data.get('scheduleSanitized'):
-            errors.append('schedule PDF must be replaced with a sanitized copy')
     return errors
 
 if __name__ == '__main__':

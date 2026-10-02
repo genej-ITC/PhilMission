@@ -40,7 +40,6 @@ data class Content(
     val messageTitle: String,
     val messageBlocks: List<String>,
     val fileHashes: Map<String, String>,
-    val scheduleSanitized: Boolean,
 ) {
     companion object {
         fun load(context: Context): Content {
@@ -69,7 +68,6 @@ data class Content(
                 messageTitle = document.getString("title"),
                 messageBlocks = document.getJSONArray("blocks").let { b -> (0 until b.length()).map { b.getString(it) } },
                 fileHashes = files.keys().asSequence().associateWith { files.getString(it) },
-                scheduleSanitized = json.optBoolean("scheduleSanitized", false),
             )
         }
 

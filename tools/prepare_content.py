@@ -22,15 +22,16 @@ extra = json.loads((root / 'content/extra.json').read_text(encoding='utf-8'))
 content = dict(version='0.1.0-draft', reviewStatus='draft', licenseStatus='original',
     source='표현 참고: Peace Corps Tagalog Language Packet (https://eric.ed.gov/?id=ED402768). 사역 문장·번역·독음은 작성 초안이며 현지 미검수.',
     worship=extra['worship'], songs=extra['songs'], gospel=extra['gospel'], contacts=extra['contacts'],
-    fieldDocuments=extra['fieldDocuments'], scheduleSanitized=False,
+    fieldDocuments=extra['fieldDocuments'],
     phrases=rows, documents=[dict(id='home-message', title='오늘, 구원이 이 집에 이르렀습니다',
     source='사용자 제공 DATA/가정심방 말씀.hwpx', blocks=[x for x in lines if x])])
-shutil.copyfile(root / 'DATA/가정심방 예배순서.jpg', assets / 'service-order.jpg')
-shutil.copyfile(root / 'DATA/선교 일정.pdf', assets / 'schedule.pdf')  # 개발용 원본. 릴리스 전 개인 사정 제거 사본으로 교체
-import hashlib
-content['files'] = {n: hashlib.sha256((assets / n).read_bytes()).hexdigest() for n in ('service-order.jpg', 'schedule.pdf')}
+# 예배 순서도 선교 일정처럼 앱에 넣지 않고, 앱의 현장 자료 화면에서 사용자가 직접 등록한다.
+for name in ('schedule.pdf', 'service-order.jpg'):
+    (assets / name).unlink(missing_ok=True)
+# 선교 일정 PDF는 개인 사정이 있어 앱에 넣지 않는다. 앱의 현장 자료 화면에서 사용자가 직접 등록한다.
+content['files'] = {}  # 앱에 내장하는 필수 파일 없음(해시 점검 대상 없음)
 errors = validate(content)
 if errors:
     raise ValueError(errors)
 (assets / 'content.json').write_text(json.dumps(content,ensure_ascii=False,indent=2), encoding='utf-8')
-print(f'Prepared {len(rows)} phrases, {len(lines)} source text blocks and service-order JPG. Draft only.')
+print(f'Prepared {len(rows)} phrases, {len(lines)} source text blocks. Draft only.')

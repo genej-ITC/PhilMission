@@ -10,6 +10,8 @@ import android.net.Network
 import android.net.NetworkCapabilities
 import android.net.Uri
 import android.widget.Toast
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -29,6 +31,9 @@ import androidx.compose.ui.unit.sp
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
 private val CATEGORIES = linkedMapOf(
     "all" to "전체", "greeting" to "인사·자기소개", "children" to "어린이 사역",
@@ -36,11 +41,12 @@ private val CATEGORIES = linkedMapOf(
 )
 
 @Composable
-private fun NavCard(title: String, subtitle: String = "", onClick: () -> Unit) {
+private fun NavCard(title: String, subtitle: String = "", actions: (@Composable RowScope.() -> Unit)? = null, onClick: () -> Unit) {
     Card(onClick = onClick, modifier = Modifier.fillMaxWidth()) {
         Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(4.dp)) {
             Text(title, style = MaterialTheme.typography.titleLarge)
             if (subtitle.isNotBlank()) Text(subtitle, style = MaterialTheme.typography.bodyMedium)
+            if (actions != null) Row(Modifier.padding(top = 8.dp), horizontalArrangement = Arrangement.spacedBy(12.dp), content = actions)
         }
     }
 }
@@ -270,14 +276,64 @@ fun GospelScreen(cards: List<GospelCard>, language: String, size: Float) {
 
 // ---- 현장 자료 ----
 
+/** 앱에서 등록·교체할 수 있는 자료(type이 "-user"로 끝남)의 저장 파일 이름(확장자 제외). */
+private fun userBase(doc: FieldDocument) =
+    if (doc.type == "pdf-user") doc.asset.removePrefix("@user/").substringBeforeLast('.') else SERVICE_ORDER_BASE
+
 @Composable
 fun DocsScreen(content: Content, push: (String) -> Unit) {
+    val context = LocalContext.current
+    val scope = rememberCoroutineScope()
+    var version by remember { mutableIntStateOf(0) } // 등록·삭제 후 화면을 다시 그리기 위한 값
+    var message by remember { mutableStateOf("") }
+    var pending by remember { mutableStateOf<FieldDocument?>(null) }
+    var confirmDelete by remember { mutableStateOf<FieldDocument?>(null) }
+    val picker = rememberLauncherForActivityResult(ActivityResultContracts.OpenDocument()) { uri ->
+        val doc = pending
+        pending = null
+        if (uri != null && doc != null) scope.launch {
+            val result = withContext(Dispatchers.IO) { importUserDoc(context, uri, userBase(doc), allowImage = doc.type == "image-user") }
+            message = if (result.isSuccess) "${doc.title}을(를) 등록했습니다." else "파일을 열 수 없어 등록하지 못했습니다. 다른 파일을 선택해 주세요."
+            version++
+        }
+    }
+    confirmDelete?.let { doc ->
+        AlertDialog(
+            onDismissRequest = { confirmDelete = null },
+            title = { Text("${doc.title} 삭제") },
+            text = { Text("등록된 파일을 앱에서 삭제합니다. 폰에 있는 원본 파일은 그대로 남습니다.") },
+            confirmButton = { TextButton(onClick = { deleteUserDoc(context, userBase(doc)); confirmDelete = null; message = ""; version++ }) { Text("삭제") } },
+            dismissButton = { TextButton(onClick = { confirmDelete = null }) { Text("취소") } },
+        )
+    }
     Column(Modifier.verticalScroll(rememberScrollState()).padding(16.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
         content.fieldDocuments.forEach { doc ->
+            if (doc.type == "pdf-user" || doc.type == "image-user") {
+                val withImage = doc.type == "image-user"
+                val mimes = if (withImage) arrayOf("image/jpeg", "image/png", "application/pdf") else arrayOf("application/pdf")
+                val saved = remember(version) { userDocFile(context, userBase(doc))?.lastModified() }
+                val savedText = saved?.let { "등록일: ${SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.KOREA).format(Date(it))}" }
+                if (saved != null) {
+                    NavCard(doc.title, savedText.orEmpty(), actions = {
+                        OutlinedButton(onClick = { pending = doc; picker.launch(mimes) }) { Text(if (withImage) "다른 파일로 바꾸기" else "다른 PDF로 바꾸기") }
+                        OutlinedButton(onClick = { confirmDelete = doc }) { Text("삭제") }
+                    }) { push(if (withImage) "img" else "pdf:${doc.asset}") }
+                } else {
+                    Card(Modifier.fillMaxWidth()) {
+                        Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                            Text(doc.title, style = MaterialTheme.typography.titleLarge)
+                            Text(if (withImage) "등록된 ${doc.title}가 없습니다. PDF/JPG/PNG 파일을 등록해 주세요." else "등록된 ${doc.title}이 없습니다. 개인 정보 보호를 위해 앱에 포함하지 않았습니다. 폰에 있는 PDF 파일을 등록해 주세요.", style = MaterialTheme.typography.bodyMedium)
+                            Button(onClick = { pending = doc; picker.launch(mimes) }) { Text(if (withImage) "예배 순서 등록" else "선교 일정 PDF 등록") }
+                        }
+                    }
+                }
+                return@forEach
+            }
             val route = when (doc.type) { "pdf" -> "pdf:${doc.asset}"; "image" -> "img"; else -> "msg" }
             NavCard(doc.title, listOf(doc.docDate.takeIf { it.isNotBlank() }?.let { "문서 기준일: $it" }, doc.note.takeIf { it.isNotBlank() }).filterNotNull().joinToString("\n")) { push(route) }
         }
-        Text("자료는 앱 재설치(APK 업데이트)로만 갱신됩니다. 자동으로 바뀌지 않습니다.", style = MaterialTheme.typography.bodySmall)
+        if (message.isNotBlank()) Text(message, style = MaterialTheme.typography.bodyMedium)
+        Text("선교 일정과 예배 순서는 앱에서 파일을 불러와 바꿀 수 있습니다. 나머지 자료는 앱 재설치(APK 업데이트)로만 갱신되며 자동으로 바뀌지 않습니다.", style = MaterialTheme.typography.bodySmall)
     }
 }
 
@@ -396,10 +452,11 @@ fun ReadinessScreen(content: Content) {
         item { Text("검수 상태: ${if (content.reviewStatus == "approved") "검수 완료" else "검수 대기 (개발판)"}") }
         item { Text("텍스트: 회화 ${content.phrases.size}문장 · 예배문 ${content.worship.size}종 · 찬양 ${content.songs.size}곡 · 전도 카드 ${content.gospelCards.size}장 (내장)") }
         item { Text("문장 음성: 포함된 파일 없음 (선택 기능 — 없어도 오류가 아닙니다)") }
-        if (!content.scheduleSanitized) item { Text("주의: 선교 일정 PDF는 개인 사정이 포함된 원본입니다. 배포 전 정리본으로 교체해야 합니다.", color = MaterialTheme.colorScheme.error) }
+        item { Text("선교 일정: ${if (userDocFile(context, "schedule") != null) "등록됨" else "미등록 (현장 자료에서 PDF를 등록해 주세요)"}") }
         item { Section("필수 파일 점검") }
         val list = results
         if (list == null) item { CircularProgressIndicator() }
+        else if (list.isEmpty()) item { Text("앱에 내장된 필수 파일은 없습니다. 선교 일정과 예배 순서는 현장 자료에서 등록합니다.") }
         else items(list) { (name, ok, message) ->
             Text("${if (ok) "✓" else "✗"} $name — $message", color = if (ok) MaterialTheme.colorScheme.onSurface else MaterialTheme.colorScheme.error)
         }

@@ -26,8 +26,11 @@ import com.google.mlkit.nl.translate.Translation
 import com.google.mlkit.nl.translate.Translator
 import com.google.mlkit.nl.translate.TranslatorOptions
 
-private fun speechTag(lang: String) = if (lang == "ko") "ko-KR" else "fil-PH"
-private fun mlKitLang(lang: String) = if (lang == "ko") TranslateLanguage.KOREAN else TranslateLanguage.TAGALOG
+private fun speechTag(lang: String) = when (lang) { "ko" -> "ko-KR"; "en" -> "en-US"; else -> "fil-PH" }
+private fun mlKitLang(lang: String) = when (lang) { "ko" -> TranslateLanguage.KOREAN; "en" -> TranslateLanguage.ENGLISH; else -> TranslateLanguage.TAGALOG }
+private fun langName(lang: String) = when (lang) { "ko" -> "한국어"; "en" -> "영어"; else -> "따갈로그어" }
+/** 선택한 언어 쌍("tl" 또는 "en")에서 [from]의 번역 대상 언어. 한국어는 상대 언어로, 상대 언어는 한국어로. */
+private fun targetOf(from: String, partner: String) = if (from == "ko") partner else "ko"
 
 private fun speechErrorMessage(code: Int) = when (code) {
     SpeechRecognizer.ERROR_NO_MATCH, SpeechRecognizer.ERROR_SPEECH_TIMEOUT -> "음성을 알아듣지 못했습니다. 다시 눌러 말씀해 주세요."
@@ -44,6 +47,7 @@ fun TranslateScreen(size: Float) {
     val context = LocalContext.current
     val online = rememberIsOnline()
     var listening by remember { mutableStateOf<String?>(null) }
+    var partner by rememberSaveable { mutableStateOf("tl") }
     var srcLang by rememberSaveable { mutableStateOf("ko") }
     var sourceText by rememberSaveable { mutableStateOf("") }
     var resultText by rememberSaveable { mutableStateOf("") }
@@ -57,9 +61,10 @@ fun TranslateScreen(size: Float) {
 
     fun translate(text: String, from: String) {
         if (text.isBlank()) return
-        val translator = translators.getOrPut(from) {
+        val to = targetOf(from, partner)
+        val translator = translators.getOrPut("$from>$to") {
             Translation.getClient(TranslatorOptions.Builder()
-                .setSourceLanguage(mlKitLang(from)).setTargetLanguage(mlKitLang(if (from == "ko") "tl" else "ko")).build())
+                .setSourceLanguage(mlKitLang(from)).setTargetLanguage(mlKitLang(to)).build())
         }
         val mine = ++ticket[0]
         translator.downloadModelIfNeeded(DownloadConditions.Builder().build())
@@ -111,7 +116,18 @@ fun TranslateScreen(size: Float) {
     Column(Modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(20.dp), verticalArrangement = Arrangement.spacedBy(16.dp)) {
         Text("버튼을 누르고 말씀하세요. 말하는 동안 글자와 번역이 나타납니다. 다시 누르면 멈춥니다.", style = MaterialTheme.typography.bodyMedium)
         Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-            for ((lang, label) in listOf("ko" to "한국어로 말하기", "tl" to "따갈로그어로 말하기")) {
+            for ((code, label) in listOf("tl" to "한국어↔따갈로그어", "en" to "한국어↔영어")) {
+                FilterChip(
+                    selected = partner == code,
+                    onClick = { if (partner != code) { partner = code; srcLang = "ko"; sourceText = ""; resultText = ""; status = ""; ticket[0]++ } },
+                    enabled = listening == null,
+                    label = { Text(label) },
+                )
+            }
+        }
+        Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+            for (lang in listOf("ko", partner)) {
+                val label = "${langName(lang)}로 말하기"
                 val active = listening == lang
                 Button(
                     onClick = { toggle(lang) },
@@ -124,9 +140,9 @@ fun TranslateScreen(size: Float) {
         else if (!online) Text("인터넷에 연결되어 있지 않아 사용할 수 없습니다.", color = MaterialTheme.colorScheme.error)
         if (status.isNotBlank()) Text(status, style = MaterialTheme.typography.bodyMedium)
         if (sourceText.isNotBlank()) {
-            Text(if (srcLang == "ko") "한국어" else "따갈로그어", style = MaterialTheme.typography.labelLarge, color = MaterialTheme.colorScheme.primary)
+            Text(langName(srcLang), style = MaterialTheme.typography.labelLarge, color = MaterialTheme.colorScheme.primary)
             Text(sourceText, fontSize = (size * 0.85f).sp, lineHeight = (size * 1.2f).sp)
-            Text(if (srcLang == "ko") "따갈로그어" else "한국어", style = MaterialTheme.typography.labelLarge, color = MaterialTheme.colorScheme.primary)
+            Text(langName(targetOf(srcLang, partner)), style = MaterialTheme.typography.labelLarge, color = MaterialTheme.colorScheme.primary)
             Text(resultText.ifBlank { "…" }, fontSize = (size * 1.3f).sp, lineHeight = (size * 1.7f).sp)
         }
         Text("자동 번역은 틀릴 수 있습니다. 중요한 내용은 현지인에게 확인하세요. 음성은 구글 음성 인식 서비스로 전송될 수 있습니다.", style = MaterialTheme.typography.bodySmall)

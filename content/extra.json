@@ -476,11 +476,11 @@
   "fieldDocuments": [
     {
       "id": "doc-schedule",
-      "type": "pdf",
+      "type": "pdf-user",
       "title": "선교 일정",
-      "asset": "schedule.pdf",
-      "docDate": "2026-09-24~26 (원본 문서 기준)",
-      "note": "원본에 개인 사정이 포함되어 있어 배포 전 사본 제작 필요"
+      "asset": "@user/schedule.pdf",
+      "docDate": "",
+      "note": "앱에서 직접 등록하는 PDF (앱에 포함하지 않음)"
     },
     {
       "id": "doc-message",
@@ -492,11 +492,11 @@
     },
     {
       "id": "doc-order",
-      "type": "image",
+      "type": "image-user",
       "title": "예배 순서",
       "asset": "service-order.jpg",
       "docDate": "",
-      "note": "제공 JPG"
+      "note": "앱에서 직접 등록하는 PDF/JPG/PNG (앱에 포함하지 않음)"
     }
   ]
 }
