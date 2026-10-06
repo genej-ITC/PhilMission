@@ -1,11 +1,22 @@
 # PhilMission 진행 상황
 
-마지막 갱신: 2026-10-06 (Claude. 상단 로고·문구 변경, 찬양·말씀 추가 기능, 기본 연락처 수정 기능 추가, 불필요한 안내 문구 정리. 에뮬레이터 확인 후 APK를 실기기로 복사)
+마지막 갱신: 2026-10-06 (Claude. 릴리스 서명 키·아이콘·버전 정리, 상단 로고·문구 변경, 찬양·말씀 추가 기능, 기본 연락처 수정 기능 추가, 불필요한 안내 문구 정리. 에뮬레이터 확인 후 APK를 실기기로 복사)
 
 ## 현재 상태: 개발용 debug APK 빌드 가능 (현장 배포 불가)
 - `app/build/outputs/apk/debug/app-debug.apk` 빌드 성공 (약 97MB. ML Kit 번역 라이브러리 때문). 에뮬레이터 `pm`과 실기기(S25 FE)에 설치해 봄.
 - Python 콘텐츠 테스트 5개, `validate_content.py`(초안 구조) 통과. Kotlin 단위 테스트(`LogicTest`)는 10/6 기본 연락처 수정 기능 추가 직후 통과(그 뒤 문구 삭제만 바뀜).
 - lint: 환경 문제로 완료 확인 못 함 (아래 참고).
+
+## 10/6 배포 준비 (서명 키·아이콘·버전)
+- **릴리스 서명 키**: `%USERPROFILE%\PhilMission-signing\`(개발 PC의 사용자 폴더 아래)에 `philmission-release.jks`와 `keystore.properties`(비밀번호 포함, 무작위 생성)를 만들었다. **저장소 밖에 있고 `.gitignore`에도 `*.jks`, `keystore.properties`가 있다. 이 폴더를 USB·개인 클라우드 등 안전한 곳에 반드시 백업할 것 — 키를 잃으면 앱 업데이트를 이어갈 수 없다.** 인증서 SHA-256: `0374095f14e69a67c141a2f1a053e781c4914bb6203cfe2a60925843dd1a09f3`(유효 10,000일). 다른 PC에서 빌드하려면 폴더를 복사하거나 환경변수 `PHILMISSION_KEYSTORE_PROPS`로 properties 경로를 지정. 파일이 없으면 서명 없는 릴리스 APK가 만들어진다(`app/build.gradle.kts`).
+- **debug 서명 → release 서명 전환 주의**: 서명이 달라서 기존에 설치된 debug 버전 위에는 설치되지 않는다(`INSTALL_FAILED_UPDATE_INCOMPATIBLE` / "앱이 설치되지 않음"). **기존 앱을 먼저 삭제해야 하고, 삭제하면 그 앱에 등록한 찬양·말씀·선교 일정·연락처 수정이 사라진다.** 이후부터는 release 키로 서명한 APK끼리 덮어 설치된다.
+- **앱 이름·아이콘**: 이름 "필리핀 선교"(예전 "PhilMission 개발판"). 아이콘은 `DATA/강남교회로고.png`의 심볼만 따서 선명하게 다시 그린 적응형 아이콘(`res/drawable-nodpi/ic_launcher_foreground.png`, `res/mipmap-anydpi-v26/`). 원본 로고가 168×48 픽셀로 작고 왼쪽이 약간 잘려 있어 아이콘 왼쪽이 평평하게 보인다. **고해상도 로고(가능하면 벡터 AI/SVG)를 받으면 교체할 것.**
+- **버전**: 현재 `versionName = "1.0.1"`, `versionCode = 2`(1.0.0은 용량 줄이기 전 빌드). 업데이트를 배포할 때마다 `versionCode`를 올릴 것(3, 4, …).
+- **용량 줄이기**: 번역 라이브러리의 네이티브 파일(`libtranslate_jni.so`)이 CPU별(arm64·arm32·x86·x86_64)로 들어 약 63MB를 차지했다. 릴리스 빌드에만 `ndk { abiFilters += "arm64-v8a" }`를 걸어 **72MB → 약 25.9MB**로 줄임(`app/build.gradle.kts`). 대신 32비트 폰과 x86 에뮬레이터에서는 설치·실행되지 않으므로 **에뮬레이터 확인은 debug 빌드로** 한다. S25 FE에 설치되는 것까지 확인(통역 등 기능은 실기기 체크리스트로 계속 확인). 코드 축소(R8)는 위험 대비 이득이 작아 켜지 않음.
+- **릴리스 빌드 명령**: `powershell -File build.ps1 -Tasks assembleRelease -GradleArgs '-x','verifyReleaseContent'` → `app/build/outputs/apk/release/app-release.apk`(약 25.9MB, arm64 전용). `verifyReleaseContent`(번역 검수 승인 검증)는 검수 전이라 실패하도록 되어 있어 **검수 완료 전에는 `-x verifyReleaseContent`로 의도적으로 건너뛰어야** 한다. 검수가 끝나면 이 옵션 없이 빌드해 검증을 통과시킬 것. `build.ps1`에 `-GradleArgs` 옵션을 추가함.
+- 배포 파일: `docs/PhilMission-1.0.1.apk`(release 서명, arm64, 가장 최근). `docs/PhilMission-1006.apk`는 debug 서명의 예전 버전이므로 배포하지 말 것(삭제해도 됨). APK는 `.gitignore`(`*.apk`)로 저장소에 올라가지 않는다.
+- **설치·사용 매뉴얼 PPT**: `docs/PhilMission_설치_사용_매뉴얼.pptx`(19장, 구글 드라이브에서 받아 삼성 폰에 설치하는 단계별 안내와 사용법)와 `docs/PhilMission_설치_사용_간이매뉴얼.pptx`(5장 요약). 설치 단계 화면은 실제 폰 캡처가 아니라 예시 그림이므로 실제 폰에서 따라 해 보고 문구를 맞출 것. 앱 이름이 "필리핀 선교"로 바뀐 것(1.0.1)은 매뉴얼에 반영함.
+- 아직 안 한 것: 앱 설정 화면에 버전 표시, 플레이 스토어 내부 테스트 배포, 번역 검수 후 `verifyReleaseContent` 통과시켜 정식 빌드.
 
 ## 10/6 바뀐 것
 - **상단 바**: 홈 화면 상단의 "PhilMission" 글자를 강남교회 로고(`app/src/main/res/drawable/church_logo.png`, 원본은 `DATA/강남교회로고.png`, 154×44dp)로 교체. 하위 화면은 기존처럼 화면 제목. 상단 안내 배너("개발판 · 번역과 독음은 현지 검수 전입니다")는 "필리핀 선교"(20sp, 앞에 전각 공백 한 글자)로 변경.
@@ -97,7 +108,7 @@ Start-Process .tools\android-sdk\emulator\emulator.exe -ArgumentList '-avd','pm'
 - `python tools/validate_content.py --release` 는 현재 **실패**해야 정상: 검수 미승인.
 - **선교 일정.pdf 원본에 가족별 신앙·건강·가정 사정이 있음** → 앱에 넣지 않고 사용자가 폰에서 직접 등록(10/2 변경). 개인 정보가 APK에 들어가지 않음. 다만 `DATA/`의 가정심방 말씀 HWPX는 아직 내장이므로 배포 전 그 내용에 개인 사정이 없는지 확인할 것. APK를 여러 사람에게 보내기 전에도 확인.
 - 모든 따갈로그어/영어/독음/한국어 뜻은 초안(현지 검수 대기).
-- **성경 구절 4개(따갈로그어 Ang Dating Biblia 1905, 영어 WEB, 한국어 개역한글)는 Claude가 기억으로 입력**한 것 — 실제 성경 본문과 대조 필수. 음독도 초안.
+- **성경 구절 4개**: 10/6에 실제 본문과 대조해 따갈로그어(Ang Dating Biblia 1905, 기억으로 쓴 문장이 4개 모두 달라서 교체)와 한국어(개역한글, 요 3:16 "하려 하심이니라"·롬 5:8 "우리에게 대한" 2곳)를 고쳤다. 영어(WEB)는 4개 모두 일치. 대조 출처는 getbible.net(교차 확인: bible.com TLAB). **독음은 Claude가 새로 만든 한글 표기라 현지 협력자 확인이 필요**하고, ADB는 옛 어투(pagsinta, nangagkasala 등)라 현지 분들께 고풍스럽게 들릴 수 있음.
 - 십계명·전도 카드 문장·영어 번역은 직접 작성 초안.
 - 연락처: 기본 연락처는 숙소 하나(주소 메모만, 전화번호 없음. 앱에서 수정 가능). 공관·병원·긴급 연락망은 공식 자료 확인 후 `content/extra.json`에 추가하거나 앱에서 개인 연락처로 입력.
 - 가정심방 말씀 텍스트는 3개 언어 문단이 섞인 원문 그대로(영어 번역 미작업).
@@ -112,7 +123,7 @@ Start-Process .tools\android-sdk\emulator\emulator.exe -ArgumentList '-avd','pm'
 ## 다음에 이어서 할 일 (제안 순서)
 1. 폰에 debug APK 설치 → 위 '실기기에서 꼭 확인' 체크리스트 점검, 특히 통역.
 2. 발견 사항 수정. `testDebugUnitTest` 재실행.
-3. 성경 구절 4개를 실제 따갈로그어 성경과 대조·수정.
+3. (10/6 본문 대조 완료) 성경 구절 독음 4개를 현지 협력자에게 확인받기. 고풍스러운 어투가 문제면 현대어 번역(Ang Salita ng Diyos 등)으로 교체 검토.
 4. 가정심방 말씀(내장 HWPX 텍스트)에 개인 사정이 없는지 확인. 필요하면 선교 일정·예배 순서처럼 앱 내 등록 방식으로 전환 검토.
 5. 기본 연락처(공관·병원·긴급망)를 공식 자료로 채우기 — 사용자가 번호/출처 제공 필요.
 6. lint 문제 해결, 릴리스 서명 키 생성(저장소 밖 보관), 검수 완료 후 `--release` 검증 통과 확인.

@@ -1,4 +1,4 @@
-param([string[]]$Tasks = @('assembleDebug', 'testDebugUnitTest', 'lintDebug'))
+param([string[]]$Tasks = @('assembleDebug', 'testDebugUnitTest', 'lintDebug'), [string[]]$GradleArgs = @())
 $ErrorActionPreference = 'Stop'
 $projectRoot = $PSScriptRoot
 $jdkPath = Get-ChildItem -Directory "$projectRoot/.tools/jdk-*" | Select-Object -First 1
@@ -9,6 +9,6 @@ $env:GRADLE_USER_HOME = "$projectRoot/.tools/gradle-cache"
 $env:PATH = "$env:JAVA_HOME/bin;$env:PATH"
 Push-Location $projectRoot
 try {
-    & "$projectRoot/.tools/gradle-8.11.1/bin/gradle.bat" @Tasks --console=plain
+    & "$projectRoot/.tools/gradle-8.11.1/bin/gradle.bat" @Tasks @GradleArgs --console=plain
     if ($LASTEXITCODE -ne 0) { throw "Gradle failed: $LASTEXITCODE" }
 } finally { Pop-Location }

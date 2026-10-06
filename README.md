@@ -25,6 +25,16 @@ powershell -File build.ps1 -Tasks testDebugUnitTest
 ```
 결과물은 `app/build/outputs/apk/debug/app-debug.apk`(약 97MB, ML Kit 번역 라이브러리 포함)입니다. 콘텐츠 원본은 `content/phrases.tsv`, `content/extra.json`입니다.
 
+### 배포용(release) 빌드
+```
+powershell -File build.ps1 -Tasks assembleRelease -GradleArgs '-x','verifyReleaseContent'
+```
+- 결과물: `app/build/outputs/apk/release/app-release.apk`(약 26MB, 앱 이름 "필리핀 선교", 버전 `1.0.1`).
+- 용량을 줄이려고 배포용은 최신 폰(arm64)용만 담았습니다. 32비트 폰과 x86 에뮬레이터에서는 실행되지 않으며, 에뮬레이터 확인은 debug 빌드로 합니다.
+- 서명 키는 저장소에 없습니다. `~/PhilMission-signing/keystore.properties`(또는 환경변수 `PHILMISSION_KEYSTORE_PROPS`)가 있어야 서명되며, 키 파일은 따로 안전하게 백업해야 합니다. 없으면 서명 없는 APK가 만들어집니다.
+- `verifyReleaseContent`는 번역 검수 승인 전에는 실패하도록 해 두었습니다. 검수 전 내부 배포 때만 `-x`로 건너뛰세요.
+- debug 서명 앱과 서명이 달라, 기존 debug 앱을 지우고 설치해야 합니다(등록한 자료는 사라짐).
+
 ## 폰에 설치
 - USB 디버깅이 켜져 있으면 `adb install -r app-debug.apk`.
 - 아니면 APK를 폰 `Download` 폴더로 복사한 뒤 "내 파일"에서 설치합니다(출처를 알 수 없는 앱 허용 필요). 기존 앱 위에 덮어설치해도 등록한 자료와 연락처는 유지됩니다.

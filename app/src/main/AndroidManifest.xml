@@ -6,7 +6,7 @@
     <queries>
         <intent><action android:name="android.speech.RecognitionService" /></intent>
     </queries>
-    <application android:allowBackup="false" android:label="PhilMission 개발판" android:theme="@android:style/Theme.Material.Light.NoActionBar" android:supportsRtl="true">
+    <application android:allowBackup="false" android:icon="@mipmap/ic_launcher" android:roundIcon="@mipmap/ic_launcher_round" android:label="필리핀 선교" android:theme="@android:style/Theme.Material.Light.NoActionBar" android:supportsRtl="true">
         <activity android:name=".MainActivity" android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
