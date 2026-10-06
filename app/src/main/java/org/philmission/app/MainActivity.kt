@@ -6,7 +6,11 @@ import androidx.activity.SystemBarStyle
 import androidx.activity.compose.BackHandler
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -68,6 +72,7 @@ private val TAB_ICONS = listOf("◇", "◎", "♡", "≡")
 @Composable
 fun MissionApp(content: Content, users: UserStore) {
     val language by users.language.collectAsState(initial = "tl")
+    val userSongs by users.userSongs.collectAsState(initial = emptyList())
     val favorites by users.favorites.collectAsState(initial = emptyList())
     val fontStep by users.fontStep.collectAsState(initial = 1)
     val keepAwake by users.keepAwake.collectAsState(initial = true)
@@ -82,12 +87,13 @@ fun MissionApp(content: Content, users: UserStore) {
 
     val base = when (fontStep) { 0 -> 20f; 2 -> 28f; else -> 24f }
     val reading = route.startsWith("w:") || route.startsWith("s:") || route.startsWith("p:") ||
-        route.startsWith("large:") || route == "msg" || route == "img" || route.startsWith("pdf:") || route == "gospel" || route == "prayer"
+        route.startsWith("large:") || route.startsWith("us:") || route == "msg" || route == "img" || route.startsWith("pdf:") || route == "gospel" || route == "prayer"
 
     val title = when {
         route.startsWith("large:") -> "보여주기"
         route.startsWith("w:") -> content.worship.find { it.id == route.removePrefix("w:") }?.title ?: "예배문"
         route.startsWith("s:") -> content.songs.find { it.id == route.removePrefix("s:") }?.titleKo ?: "찬양"
+        route.startsWith("us:") -> userSongs.find { it.id.toString() == route.removePrefix("us:") }?.title ?: "찬양"
         route.startsWith("p:") -> "회화"
         route == "msg" -> "가정심방 말씀"
         route == "img" -> "예배 순서"
@@ -96,16 +102,19 @@ fun MissionApp(content: Content, users: UserStore) {
         route == "prayer" -> "영접 기도문"
         route == "translate" -> "통역"
         route == "contacts" -> "연락처"
-        route == "docs" -> "현장 자료"
-        route == "check" -> "현장 준비 점검"
+        route == "docs" -> "자료 추가"
         route == "settings" -> "설정"
-        else -> "PhilMission"
+        else -> ""
     }
+    val isHome = title.isEmpty()
 
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text(title) },
+                title = {
+                    if (isHome) Image(painterResource(R.drawable.church_logo), contentDescription = "강남교회", Modifier.size(154.dp, 44.dp), contentScale = ContentScale.Fit)
+                    else Text(title)
+                },
                 navigationIcon = { if (stack.isNotEmpty()) TextButton(onClick = { pop() }) { Text("뒤로") } },
                 actions = {
                     TextButton(onClick = { scope.launch { users.language(if (language == "tl") "en" else "tl") } }) {
@@ -124,9 +133,9 @@ fun MissionApp(content: Content, users: UserStore) {
     ) { inset ->
         Column(Modifier.padding(inset).fillMaxSize()) {
             KeepAwake(reading && keepAwake)
-            if (!route.startsWith("large:") && !route.startsWith("pdf:") && route != "img") {
+            if (!route.startsWith("large:") && !route.startsWith("pdf:") && !route.startsWith("us:") && route != "img") {
                 Surface(color = MaterialTheme.colorScheme.secondaryContainer) {
-                    Text("개발판 · 번역과 독음은 현지 검수 전입니다", Modifier.fillMaxWidth().padding(8.dp), fontSize = 12.sp)
+                    Text("　필리핀 선교", Modifier.fillMaxWidth().padding(8.dp), fontSize = 20.sp)
                 }
             }
             when {
@@ -136,6 +145,7 @@ fun MissionApp(content: Content, users: UserStore) {
                 }
                 route.startsWith("w:") -> content.worship.find { it.id == route.removePrefix("w:") }?.let { WorshipScreen(it, language, base) }
                 route.startsWith("s:") -> content.songs.find { it.id == route.removePrefix("s:") }?.let { SongScreen(it, base) }
+                route.startsWith("us:") -> userSongs.find { it.id.toString() == route.removePrefix("us:") }?.let { UserSongScreen(it, users, ::pop) }
                 route == "msg" -> MessageScreen(content, base)
                 route == "img" -> ServiceOrderScreen()
                 route.startsWith("pdf:") -> PdfAssetScreen(route.removePrefix("pdf:"))
@@ -143,10 +153,9 @@ fun MissionApp(content: Content, users: UserStore) {
                 route == "prayer" -> GospelScreen(listOf(content.gospelPrayer), language, base)
                 route == "translate" -> TranslateScreen(base)
                 route == "contacts" -> ContactsScreen(content, users)
-                route == "docs" -> DocsScreen(content, ::push)
-                route == "check" -> ReadinessScreen(content)
+                route == "docs" -> DocsScreen(content, users, ::push)
                 route == "settings" -> SettingsScreen(fontStep, keepAwake, { scope.launch { users.fontStep(it) } }, { scope.launch { users.keepAwake(it) } })
-                tab == 0 -> WorshipHome(content, ::push)
+                tab == 0 -> WorshipHome(content, userSongs, ::push)
                 tab == 1 -> PhraseList(content, language, favorites, ::push)
                 tab == 2 -> GospelHome(::push)
                 else -> MoreHome(::push)

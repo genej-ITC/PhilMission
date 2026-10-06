@@ -466,9 +466,9 @@
   "contacts": [
     {
       "id": "contact-lodging",
-      "name": "숙소 (위치 메모)",
+      "name": "숙소 : 필리핀 선교 센터",
       "phone": "",
-      "memo": "B6 L8 Santan St., Bermuda Heights, Antipolo City, Rizal, Philippines. 전화번호 미제공 — 출국 전 팀장이 확인",
+      "memo": "B6 L8 Santan St., Bermuda Heights, Antipolo City, Rizal, Philippines.",
       "source": "사용자 제공 DATA/기본 정보.txt",
       "checkedOn": ""
     }

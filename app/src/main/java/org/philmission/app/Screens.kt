@@ -57,15 +57,17 @@ private fun Section(text: String) = Text(text, style = MaterialTheme.typography.
 // ---- 홈 탭 ----
 
 @Composable
-fun WorshipHome(content: Content, push: (String) -> Unit) {
+fun WorshipHome(content: Content, userItems: List<UserSong>, push: (String) -> Unit) {
     LazyColumn(contentPadding = PaddingValues(16.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
         item { Section("예배문·기도문") }
         items(content.worship, key = { it.id }) { NavCard(it.title) { push("w:${it.id}") } }
         item { Section("찬양") }
         items(content.songs, key = { it.id }) { NavCard(it.titleKo, it.title + if (it.hasChords) " · 코드" else "") { push("s:${it.id}") } }
-        item { Section("가정심방") }
+        items(userItems.filter { it.kind == "song" }, key = { "us-${it.id}" }) { NavCard(it.title, "내가 추가한 찬양") { push("us:${it.id}") } }
+        item { Section("말씀") }
         item { NavCard("가정심방 말씀", content.messageTitle) { push("msg") } }
         item { NavCard("예배 순서", "제공 이미지 · 확대해서 보기") { push("img") } }
+        items(userItems.filter { it.kind == "message" }, key = { "us-${it.id}" }) { NavCard(it.title, "내가 추가한 말씀") { push("us:${it.id}") } }
     }
 }
 
@@ -80,11 +82,9 @@ fun GospelHome(push: (String) -> Unit) {
 @Composable
 fun MoreHome(push: (String) -> Unit) {
     Column(Modifier.verticalScroll(rememberScrollState()).padding(16.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
-        NavCard("현장 자료", "선교 일정 · 가정심방 말씀 · 예배 순서") { push("docs") }
+        NavCard("자료 추가", "찬양 · 말씀 · 선교 일정 · 예배 순서") { push("docs") }
         NavCard("연락처", "기본 연락처 · 개인 연락처") { push("contacts") }
-        NavCard("현장 준비 점검", "내장 파일과 콘텐츠 버전 확인") { push("check") }
         NavCard("설정", "글자 크기 · 화면 켜짐 유지") { push("settings") }
-        Text("자료는 앱에 포함되어 있습니다. 출국 전 비행기 모드에서 확인하세요.", style = MaterialTheme.typography.bodySmall)
     }
 }
 
@@ -156,7 +156,6 @@ fun WorshipScreen(doc: Worship, language: String, size: Float) {
                 Text(s.ko, fontSize = (size * 0.75f).sp)
             }
         }
-        item { Text("출처: ${doc.source}", style = MaterialTheme.typography.bodySmall) }
     }
 }
 
@@ -186,18 +185,7 @@ fun SongScreen(song: Song, size: Float) {
         item {
             Text(song.title, style = MaterialTheme.typography.headlineSmall)
             Text(if (song.singingLanguage == "tl") "가창 언어: 따갈로그어" else "가창 언어: 영어 (따갈로그어 가창 가사 없음)", style = MaterialTheme.typography.bodySmall)
-            if (song.youtube.isNotBlank()) {
-                val context = LocalContext.current
-                val online = rememberIsOnline()
-                Button(
-                    onClick = {
-                        try { context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(song.youtube))) }
-                        catch (_: ActivityNotFoundException) { Toast.makeText(context, "링크를 열 수 있는 앱이 없습니다.", Toast.LENGTH_SHORT).show() }
-                    },
-                    enabled = online,
-                ) { Text("유튜브에서 듣기") }
-                if (!online) Text("인터넷에 연결되어 있지 않아 사용할 수 없습니다.", style = MaterialTheme.typography.bodySmall)
-            }
+            if (song.youtube.isNotBlank()) YoutubeButton(song.youtube)
             if (song.hasChords) Row(verticalAlignment = androidx.compose.ui.Alignment.CenterVertically) {
                 Switch(checked = showChords, onCheckedChange = { showChords = it })
                 Spacer(Modifier.width(8.dp)); Text("코드 표시")
@@ -238,7 +226,6 @@ private fun classifyMessageBlocks(blocks: List<String>): List<Pair<BlockKind, St
 fun MessageScreen(content: Content, size: Float) {
     LazyColumn(Modifier.fillMaxSize(), contentPadding = PaddingValues(20.dp), verticalArrangement = Arrangement.spacedBy(16.dp)) {
         item { Text(content.messageTitle, style = MaterialTheme.typography.headlineSmall) }
-        item { Text("제공 원문 · 따갈로그어 / 한국어 / 독음이 섞여 있습니다. 영어 번역과 문단별 대응은 준비 중입니다.", style = MaterialTheme.typography.bodySmall) }
         items(classifyMessageBlocks(content.messageBlocks)) { (kind, text) ->
             when (kind) {
                 BlockKind.PRONUNCIATION -> Text(text, color = MaterialTheme.colorScheme.primary, fontSize = size.sp, lineHeight = (size * 1.5f).sp)
@@ -281,7 +268,9 @@ private fun userBase(doc: FieldDocument) =
     if (doc.type == "pdf-user") doc.asset.removePrefix("@user/").substringBeforeLast('.') else SERVICE_ORDER_BASE
 
 @Composable
-fun DocsScreen(content: Content, push: (String) -> Unit) {
+fun DocsScreen(content: Content, users: UserStore, push: (String) -> Unit) {
+    var adding by remember { mutableStateOf<String?>(null) }
+    adding?.let { AddItemDialog(users, it) { adding = null } }
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
     var version by remember { mutableIntStateOf(0) } // 등록·삭제 후 화면을 다시 그리기 위한 값
@@ -307,7 +296,12 @@ fun DocsScreen(content: Content, push: (String) -> Unit) {
         )
     }
     Column(Modifier.verticalScroll(rememberScrollState()).padding(16.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
-        content.fieldDocuments.forEach { doc ->
+        Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+            Button(onClick = { adding = "song" }, modifier = Modifier.weight(1f)) { Text("찬양 추가") }
+            Button(onClick = { adding = "message" }, modifier = Modifier.weight(1f)) { Text("말씀 추가") }
+        }
+        // 가정심방 말씀(type "text")은 예배 탭에 고정으로 있으므로 여기에는 표시하지 않는다.
+        content.fieldDocuments.filter { it.type != "text" }.forEach { doc ->
             if (doc.type == "pdf-user" || doc.type == "image-user") {
                 val withImage = doc.type == "image-user"
                 val mimes = if (withImage) arrayOf("image/jpeg", "image/png", "application/pdf") else arrayOf("application/pdf")
@@ -322,8 +316,8 @@ fun DocsScreen(content: Content, push: (String) -> Unit) {
                     Card(Modifier.fillMaxWidth()) {
                         Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
                             Text(doc.title, style = MaterialTheme.typography.titleLarge)
-                            Text(if (withImage) "등록된 ${doc.title}가 없습니다. PDF/JPG/PNG 파일을 등록해 주세요." else "등록된 ${doc.title}이 없습니다. 개인 정보 보호를 위해 앱에 포함하지 않았습니다. 폰에 있는 PDF 파일을 등록해 주세요.", style = MaterialTheme.typography.bodyMedium)
-                            Button(onClick = { pending = doc; picker.launch(mimes) }) { Text(if (withImage) "예배 순서 등록" else "선교 일정 PDF 등록") }
+                            Text(if (withImage) "등록된 ${doc.title}가 없습니다. PDF/JPG/PNG 파일을 등록해 주세요." else "등록된 ${doc.title}이 없습니다. PDF 파일을 등록해 주세요.", style = MaterialTheme.typography.bodyMedium)
+                            Button(onClick = { pending = doc; picker.launch(mimes) }) { Text(if (withImage) "예배 순서 등록" else "선교 일정 등록") }
                         }
                     }
                 }
@@ -333,7 +327,6 @@ fun DocsScreen(content: Content, push: (String) -> Unit) {
             NavCard(doc.title, listOf(doc.docDate.takeIf { it.isNotBlank() }?.let { "문서 기준일: $it" }, doc.note.takeIf { it.isNotBlank() }).filterNotNull().joinToString("\n")) { push(route) }
         }
         if (message.isNotBlank()) Text(message, style = MaterialTheme.typography.bodyMedium)
-        Text("선교 일정과 예배 순서는 앱에서 파일을 불러와 바꿀 수 있습니다. 나머지 자료는 앱 재설치(APK 업데이트)로만 갱신되며 자동으로 바뀌지 않습니다.", style = MaterialTheme.typography.bodySmall)
     }
 }
 
@@ -368,18 +361,24 @@ private fun PhoneActions(phone: String) {
 fun ContactsScreen(content: Content, users: UserStore) {
     val personal by users.personalContacts.collectAsState(initial = emptyList())
     val scope = rememberCoroutineScope()
+    val overrides by users.baseContactOverrides.collectAsState(initial = emptyList())
     var editing by remember { mutableStateOf<PersonalContact?>(null) }
+    var editingBase by remember { mutableStateOf<BaseContact?>(null) }
     LazyColumn(contentPadding = PaddingValues(16.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
         item { Section("기본 연락처") }
-        item { Text("통화에는 사용 가능한 통신 환경이 필요합니다. 번호는 출국 전 공식 자료로 다시 확인하세요.", style = MaterialTheme.typography.bodySmall) }
-        items(content.contacts, key = { it.id }) { c ->
+        items(content.contacts, key = { it.id }) { base ->
+            val saved = overrides.find { it.id == base.id }
+            val c = if (saved == null) base else base.copy(name = saved.name, phone = saved.phone, memo = saved.memo)
             Card(Modifier.fillMaxWidth()) {
                 Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
                     Text(c.name, style = MaterialTheme.typography.titleMedium)
-                    Text(if (c.phone.isBlank()) "전화번호 없음" else c.phone)
+                    if (c.phone.isNotBlank()) Text(c.phone)
                     if (c.memo.isNotBlank()) Text(c.memo)
-                    Text("출처: ${c.source}${if (c.checkedOn.isBlank()) " · 확인일 미기록" else " · 확인일 ${c.checkedOn}"}", style = MaterialTheme.typography.bodySmall)
                     PhoneActions(c.phone)
+                    Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                        OutlinedButton(onClick = { editingBase = c }) { Text("수정") }
+                        if (saved != null) OutlinedButton(onClick = { scope.launch { users.resetBaseContact(base.id) } }) { Text("기본값으로 되돌리기") }
+                    }
                 }
             }
         }
@@ -404,17 +403,24 @@ fun ContactsScreen(content: Content, users: UserStore) {
     editing?.let { draft ->
         ContactDialog(draft, onDismiss = { editing = null }, onSave = { scope.launch { users.saveContact(it) }; editing = null })
     }
+    editingBase?.let { base ->
+        ContactDialog(
+            PersonalContact(name = base.name, phone = base.phone, memo = base.memo), title = "기본 연락처 수정", phoneRequired = false,
+            onDismiss = { editingBase = null },
+            onSave = { scope.launch { users.saveBaseContact(BaseContactOverride(base.id, it.name, it.phone, it.memo)) }; editingBase = null },
+        )
+    }
 }
 
 @Composable
-private fun ContactDialog(initial: PersonalContact, onDismiss: () -> Unit, onSave: (PersonalContact) -> Unit) {
+private fun ContactDialog(initial: PersonalContact, title: String? = null, phoneRequired: Boolean = true, onDismiss: () -> Unit, onSave: (PersonalContact) -> Unit) {
     var name by remember { mutableStateOf(initial.name) }
     var phone by remember { mutableStateOf(initial.phone) }
     var memo by remember { mutableStateOf(initial.memo) }
     var error by remember { mutableStateOf<String?>(null) }
     AlertDialog(
         onDismissRequest = onDismiss,
-        title = { Text(if (initial.id == 0L) "연락처 추가" else "연락처 수정") },
+        title = { Text(title ?: if (initial.id == 0L) "연락처 추가" else "연락처 수정") },
         text = {
             Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
                 OutlinedTextField(name, { name = it }, label = { Text("이름") }, singleLine = true)
@@ -425,7 +431,7 @@ private fun ContactDialog(initial: PersonalContact, onDismiss: () -> Unit, onSav
         },
         confirmButton = {
             TextButton(onClick = {
-                val problem = validateContact(name, phone)
+                val problem = validateContact(name, phone, phoneRequired)
                 if (problem != null) error = problem
                 else onSave(initial.copy(name = name.trim(), phone = phone.trim(), memo = memo.trim()))
             }) { Text("저장") }
@@ -435,36 +441,6 @@ private fun ContactDialog(initial: PersonalContact, onDismiss: () -> Unit, onSav
 }
 
 // ---- 점검 / 설정 ----
-
-@Composable
-fun ReadinessScreen(content: Content) {
-    val context = LocalContext.current
-    val results by produceState<List<Triple<String, Boolean, String>>?>(null) {
-        value = withContext(Dispatchers.IO) {
-            content.fileHashes.map { (name, expected) ->
-                val actual = assetSha256(context, name)
-                Triple(name, actual == expected, if (actual == null) "파일 없음" else if (actual != expected) "해시 불일치" else "정상")
-            }
-        }
-    }
-    LazyColumn(contentPadding = PaddingValues(16.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
-        item { Text("콘텐츠 버전 ${content.version}", style = MaterialTheme.typography.titleMedium) }
-        item { Text("검수 상태: ${if (content.reviewStatus == "approved") "검수 완료" else "검수 대기 (개발판)"}") }
-        item { Text("텍스트: 회화 ${content.phrases.size}문장 · 예배문 ${content.worship.size}종 · 찬양 ${content.songs.size}곡 · 전도 카드 ${content.gospelCards.size}장 (내장)") }
-        item { Text("문장 음성: 포함된 파일 없음 (선택 기능 — 없어도 오류가 아닙니다)") }
-        item { Text("선교 일정: ${if (userDocFile(context, "schedule") != null) "등록됨" else "미등록 (현장 자료에서 PDF를 등록해 주세요)"}") }
-        item { Section("필수 파일 점검") }
-        val list = results
-        if (list == null) item { CircularProgressIndicator() }
-        else if (list.isEmpty()) item { Text("앱에 내장된 필수 파일은 없습니다. 선교 일정과 예배 순서는 현장 자료에서 등록합니다.") }
-        else items(list) { (name, ok, message) ->
-            Text("${if (ok) "✓" else "✗"} $name — $message", color = if (ok) MaterialTheme.colorScheme.onSurface else MaterialTheme.colorScheme.error)
-        }
-        if (list != null && list.any { !it.second }) item { Text("필수 파일에 문제가 있습니다. 앱을 다시 설치하거나 배포 담당자에게 문의해 주세요.", color = MaterialTheme.colorScheme.error) }
-        item { Section("출국 전 점검") }
-        item { Text("1. 비행기 모드를 켜고 앱을 완전히 종료한 뒤 다시 실행합니다.\n2. 예배문·찬양·회화·전도·연락처·현장 자료 3종을 각각 열어 봅니다.\n3. 회화에서 큰 글씨 모드가 열리는지 확인합니다.\n\n이 점검은 번역의 정확성이나 연락처의 최신성을 보장하지 않습니다.") }
-    }
-}
 
 @Composable
 fun SettingsScreen(fontStep: Int, keepAwake: Boolean, onFont: (Int) -> Unit, onAwake: (Boolean) -> Unit) {
